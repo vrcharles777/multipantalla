@@ -71,34 +71,25 @@
             color: white;
         }
 
-        .play-button {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        .play-pause-button {
+            margin-bottom: 20px;
+            padding: 10px 20px;
             background-color: #007BFF;
             color: white;
             border: none;
             border-radius: 5px;
-            padding: 10px 20px;
             cursor: pointer;
             font-size: 16px;
-            z-index: 10;
         }
 
         .play-pause-button.paused {
             background-color: #28a745;
         }
-
-        .fullscreen-button {
-            background-color: #28a745;
-            margin-right: 10px;
-        }
     </style>
 </head>
 <body>
-    <!-- Botón de Play en el centro del video -->
-    <button class="play-button" id="centralPlayButton">Play</button>
+    <!-- Botón de control de reproducción -->
+    <button class="play-pause-button" id="playPauseButton">Pause</button>
 
     <div class="container" id="video-container">
         <video id="videoElement" controls>
@@ -175,96 +166,172 @@
         const video = document.getElementById('videoElement');
         const audios = Array.from({ length: 9 }, (_, i) => document.getElementById('audio' + (i + 1)));
         const playPauseButton = document.getElementById('playPauseButton');
-        const fullscreenButton = document.getElementById('fullscreenButton');
-        const centralPlayButton = document.getElementById('centralPlayButton');
 
         const videoContainer = document.getElementById('video-container');
         const controls = document.getElementById('controls');
         let timeout;
 
-        // Manejador del botón central de Play
-        centralPlayButton.addEventListener('click', function() {
-            video.play();
-            playAllAudios();
-            enterFullscreen();
-            this.remove();
-        });
-
-        // Mostrar/ocultar controles al mover el mouse
+        // Muestra los controles cuando el cursor entra en el área del video
         videoContainer.addEventListener('mousemove', showControls);
 
-        // Sincronización de los audios con el video
-        function syncAudio() {
+        // Reproduce los audios cuando el video empieza a reproducirse
+        video.addEventListener('play', playAllAudios);
+
+        // Pausa los audios cuando el video se pausa
+        video.addEventListener('pause', pauseAllAudios);
+
+        // Manejador de clics en el contenedor del video para controlar la reproducción
+        videoContainer.addEventListener('click', function() {
+            if (video.paused) {
+                video.play();
+                playAllAudios();
+            }
+        });
+
+        // Manejador de clics en el botón de Play/Pause
+        playPauseButton.addEventListener('click', function () {
+            if (video.paused) {
+                video.play();
+                playAllAudios();
+                playPauseButton.textContent = 'Pause';
+                playPauseButton.classList.remove('paused');
+            } else {
+                video.pause();
+                pauseAllAudios();
+                playPauseButton.textContent = 'Play';
+                playPauseButton.classList.add('paused');
+            }
+        });
+
+        function showControls() {
+            controls.classList.remove('hidden');
+            controls.classList.add('visible');
+            clearTimeout(timeout);
+            timeout = setTimeout(hideControls, 2000);
+        }
+
+        function hideControls() {
+            controls.classList.remove('visible');
+            controls.classList.add('hidden');
+        }
+
+        function playAllAudios() {
             audios.forEach(audio => {
-                const syncDifference = Math.abs(audio.currentTime - video.currentTime);
-                if (syncDifference > SYNC_TOLERANCE) {
-                    audio.currentTime = video.currentTime;
-                }
-                if (video.paused && !audio.paused) {
-                    audio.pause();
-                } else if (!video.paused && audio.paused) {
-                    audio.play();
-                }
+                audio.play().catch(error => {
+                    console.error(`Error al reproducir el audio:`, error);
+                });
             });
         }
 
-        // Reproducir todos los audios
-        function playAllAudios() {
-            audios.forEach(audio => audio.play());
-            playPauseButton.classList.remove('paused');
-        }
-
-        // Pausar todos los audios
         function pauseAllAudios() {
             audios.forEach(audio => audio.pause());
-            playPauseButton.classList.add('paused');
         }
 
-        // Mute de un audio
-        function muteAudio(index) {
-            const audio = audios[index - 1];
-            audio.muted = !audio.muted;
-            document.getElementById('muteBtn' + index).classList.toggle('muted', audio.muted);
+        function setVolume(id, value) {
+            const audio = document.getElementById('audio' + id);
+            audio.volume = value;
         }
 
-        // Solo de un audio
-        function soloAudio(index) {
-            const soloAudio = audios[index - 1];
-            const isSolo = soloAudio.muted;
-            audios.forEach(audio => audio.muted = true);
-            soloAudio.muted = !isSolo;
-            audios.forEach((audio, i) => {
-                document.getElementById('muteBtn' + (i + 1)).classList.toggle('muted', audio.muted);
-            });
-        }
+        function muteAudio(id) {
+            const audio = document.getElementById('audio' + id);
+            const muteButton = document.getElementById('muteBtn' + id);
+            const soloButton = document.getElementById('soloBtn' + id);
 
-        // Control de volumen de un audio
-        function setVolume(index, value) {
-            audios[index - 1].volume = value;
-        }
-
-        // Entrar en modo pantalla completa
-        function enterFullscreen() {
-            if (videoContainer.requestFullscreen) {
-                videoContainer.requestFullscreen();
-            } else if (videoContainer.mozRequestFullScreen) { // Firefox
-                videoContainer.mozRequestFullScreen();
-            } else if (videoContainer.webkitRequestFullscreen) { // Chrome, Safari and Opera
-                videoContainer.webkitRequestFullscreen();
-            } else if (videoContainer.msRequestFullscreen) { // IE/Edge
-                videoContainer.msRequestFullscreen();
+            if (!soloButton.classList.contains('solo')) {
+                audio.muted = !audio.muted;
+                muteButton.classList.toggle('muted', audio.muted);
             }
         }
 
-        // Mostrar controles y ocultarlos después de un tiempo
-        function showControls() {
-            controls.classList.add('visible');
-            clearTimeout(timeout);
-            timeout = setTimeout(() => controls.classList.remove('visible'), 3000);
+        function soloAudio(id) {
+            const soloButton = document.getElementById('soloBtn' + id);
+            const muteButton = document.getElementById('muteBtn' + id);
+            const audio = document.getElementById('audio' + id);
+            const isSoloActive = soloButton.classList.contains('solo');
+            const allSoloButtons = document.querySelectorAll('.solo');
+
+            if (isSoloActive) {
+                if (allSoloButtons.length === 1) {
+                    restoreAllAudios();
+                }
+                soloButton.classList.remove('solo');
+                audio.muted = false;
+            } else {
+                soloButton.classList.add('solo');
+                audio.muted = false;
+                muteButton.classList.remove('muted');
+                muteOtherAudios(id);
+            }
         }
 
-        // Sincronización de audios con el video cada segundo
-        setInterval(syncAudio, SYNC_CHECK_INTERVAL);
+        function muteOtherAudios(activeId) {
+            audios.forEach((audio, index) => {
+                const i = index + 1;
+                if (i !== activeId) {
+                    const soloButton = document.getElementById('soloBtn' + i);
+                    const muteButton = document.getElementById('muteBtn' + i);
+                    if (!soloButton.classList.contains('solo')) {
+                        audio.muted = true;
+                        muteButton.classList.add('muted');
+                    }
+                }
+            });
+        }
+
+        function restoreAllAudios() {
+            audios.forEach((audio, index) => {
+                const i = index + 1;
+                const muteButton = document.getElementById('muteBtn' + i);
+                audio.muted = false;
+                muteButton.classList.remove('muted');
+            });
+        }
+
+        function updateMuteButtons() {
+            audios.forEach((audio, index) => {
+                const i = index + 1;
+                const muteButton = document.getElementById('muteBtn' + i);
+                muteButton.classList.toggle('muted', audio.muted);
+            });
+        }
+
+        function checkSync() {
+            const videoTime = video.currentTime;
+            const isDesynchronized = audios.some(audio => Math.abs(audio.currentTime - videoTime) > SYNC_TOLERANCE);
+
+            if (isDesynchronized) {
+                resyncMedia();
+            }
+        }
+
+        function startSyncCheck() {
+            setInterval(checkSync, SYNC_CHECK_INTERVAL);
+        }
+
+        function syncMedia() {
+            const videoTime = video.currentTime;
+            audios.forEach(audio => {
+                audio.currentTime = videoTime;
+                audio.play().catch(error => {
+                    console.error(`Error al reproducir el audio:`, error);
+                });
+            });
+        }
+
+        function resyncMedia() {
+            video.pause();
+            syncMedia();
+            video.play().catch(error => {
+                console.error('Error al reproducir el video:', error);
+            });
+        }
+
+        function stopPropagation(event) {
+            event.stopPropagation();
+        }
+
+        // Inicia la funcionalidad de ocultar controles
+        showControls();
     </script>
 </body>
 </html>
