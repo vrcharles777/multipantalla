@@ -20,39 +20,6 @@
             object-fit: cover; /* Ajusta el video para llenar el contenedor */
         }
 
-        /* Contenedor de controles (en la parte superior central) */
-        #controls-container {
-            position: absolute;
-            top: 20px; /* Ajusta la distancia desde la parte superior según sea necesario */
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            z-index: 10; /* Asegúrate de que los controles estén sobre el video */
-        }
-
-        /* Botones de control */
-        .control-button {
-            margin: 0 10px;
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .play-pause-button.paused {
-            background-color: #28a745;
-        }
-
-        .fullscreen-button {
-            background-color: #28a745;
-        }
-
-        /* Controles del video (superpuestos) */
         .controls {
             position: absolute;
             top: 0;
@@ -100,7 +67,27 @@
             color: white;
         }
 
-        /* Botón Play en el centro del video */
+        .play-pause-button, .fullscreen-button {
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .play-pause-button.paused {
+            background-color: #28a745;
+        }
+
+        .fullscreen-button {
+            background-color: #28a745;
+            margin-right: 10px;
+        }
+
+        /* Estilos para el botón Play en el centro del video */
         .play-overlay {
             position: absolute;
             top: 50%;
@@ -123,24 +110,18 @@
         .play-overlay.hidden {
             display: none;
         }
-
-        /* Ajusta el contenedor del video para mantener el espacio superior */
-        .video-container-adjust {
-            padding-top: 60px; /* Espacio para los botones */
-            position: relative; /* Para que el botón Play esté centrado en el video */
-        }
     </style>
 </head>
 <body>
     <!-- Contenedor de controles -->
-    <div id="controls-container">
+    <div id="controls-container" style="position: absolute; top: 20px; left: 20px;">
         <!-- Botón de pantalla completa -->
-        <button class="control-button fullscreen-button" id="fullscreenButton">Fullscreen</button>
+        <button class="fullscreen-button" id="fullscreenButton">Fullscreen</button>
         <!-- Botón de control de reproducción -->
-        <button class="control-button play-pause-button" id="playPauseButton">Pause</button>
+        <button class="play-pause-button" id="playPauseButton">Pause</button>
     </div>
 
-    <div class="container video-container-adjust" id="video-container">
+    <div class="container" id="video-container">
         <video id="videoElement" controls>
             <source src="movie.mp4" type="video/mp4">
             Your browser does not support the video tag.
