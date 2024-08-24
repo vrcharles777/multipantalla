@@ -4,43 +4,33 @@
     <title>Reproductor</title>
     <style>
         body {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             margin: 0;
-            background-color: #f0f0f0;
+            overflow: hidden; /* Evita barras de desplazamiento */
         }
 
         .container {
             position: relative;
-            width: 640px;
-            height: 360px;
+            width: 100vw; /* Ancho completo de la ventana */
+            height: 100vh; /* Alto completo de la ventana */
         }
 
         video {
             width: 100%;
             height: 100%;
+            object-fit: cover; /* Ajusta el video para llenar el contenedor */
         }
 
         .controls {
             position: absolute;
-            width: 100%;
-            height: 100%;
             top: 0;
             left: 0;
+            width: 100%;
+            height: 100%;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
             gap: 10px;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .controls.visible {
-            opacity: 1;
+            pointer-events: none; /* Evita la interacción directa con los controles */
         }
 
         .control-group {
@@ -48,11 +38,23 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
+            opacity: 1;
+            pointer-events: all;
         }
 
         .control-group input[type="range"] {
-            width: 80px;
+            width: 60%;
             margin: 5px;
+        }
+
+        .hidden {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .visible {
+            opacity: 1;
+            transition: opacity 0.3s ease;
         }
 
         .muted {
@@ -108,20 +110,11 @@
         .play-overlay.hidden {
             display: none;
         }
-
-        /* Ocultar controles cuando no está en pantalla completa */
-        .fullscreen-controls {
-            display: none;
-        }
-
-        .fullscreen-controls.fullscreen {
-            display: block;
-        }
     </style>
 </head>
 <body>
     <!-- Contenedor de controles -->
-    <div id="controls-container">
+    <div id="controls-container" style="position: absolute; top: 20px; left: 20px;">
         <!-- Botón de pantalla completa -->
         <button class="fullscreen-button" id="fullscreenButton">Fullscreen</button>
         <!-- Botón de control de reproducción -->
@@ -212,25 +205,6 @@
         const controls = document.getElementById('controls');
         let timeout;
 
-        // Detecta cambios en el estado de pantalla completa
-        function onFullscreenChange() {
-            const isFullscreen = document.fullscreenElement === video || 
-                document.mozFullscreenElement === video || 
-                document.webkitFullscreenElement === video || 
-                document.msFullscreenElement === video;
-            
-            if (isFullscreen) {
-                controls.classList.add('fullscreen');
-            } else {
-                controls.classList.remove('fullscreen');
-            }
-        }
-
-        document.addEventListener('fullscreenchange', onFullscreenChange);
-        document.addEventListener('mozfullscreenchange', onFullscreenChange);
-        document.addEventListener('webkitfullscreenchange', onFullscreenChange);
-        document.addEventListener('msfullscreenchange', onFullscreenChange);
-
         // Muestra los controles cuando el cursor entra en el área del video
         videoContainer.addEventListener('mousemove', showControls);
 
@@ -290,17 +264,15 @@
         });
 
         function showControls() {
+            controls.classList.remove('hidden');
             controls.classList.add('visible');
             clearTimeout(timeout);
             timeout = setTimeout(hideControls, 2000);
         }
 
         function hideControls() {
-            if (controls.classList.contains('fullscreen')) {
-                controls.classList.add('visible');
-            } else {
-                controls.classList.remove('visible');
-            }
+            controls.classList.remove('visible');
+            controls.classList.add('hidden');
         }
 
         function playAllAudios() {
