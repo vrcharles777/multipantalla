@@ -3,31 +3,23 @@
 <head>
     <title>Reproductor</title>
     <style>
-        html, body {
-            margin: 0;
-            height: 100%;
-            overflow: auto; /* Permite el desplazamiento en toda la página */
-        }
-
         body {
+            margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
-            background-color: #000; /* Color de fondo para contrastar el video */
+            height: 100vh;
+            overflow: hidden;
         }
 
         .controls-container {
-            position: fixed; /* Asegura que los controles estén siempre visibles en la parte superior */
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 10px;
+            position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro con transparencia */
-            z-index: 10;
+            width: 100%;
+            padding: 10px 0;
         }
 
         .video-container {
@@ -35,7 +27,6 @@
             width: 80%; /* El video ocupará el 80% del ancho de la pantalla */
             max-width: 1000px; /* Ancho máximo del video */
             height: auto; /* La altura se ajusta automáticamente para mantener la relación de aspecto */
-            margin-top: 60px; /* Espacio para los controles en la parte superior */
             display: flex;
             justify-content: center;
             align-items: center;
