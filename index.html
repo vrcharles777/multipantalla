@@ -71,30 +71,41 @@
             color: white;
         }
 
-        .play-pause-button {
+        .play-pause-button, .fullscreen-button {
             margin-bottom: 20px;
             padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
         }
 
+        .play-pause-button {
+            background-color: #007BFF;
+            color: white;
+        }
+
         .play-pause-button.paused {
             background-color: #28a745;
         }
 
-        /* Estilo para fullscreen */
-        .fullscreen .controls {
-            pointer-events: auto;
+        .fullscreen-button {
+            background-color: #28a745;
+            color: white;
+            margin-right: 10px;
+        }
+
+        .fullscreen-button.fullscreen {
+            background-color: #007BFF;
         }
     </style>
 </head>
 <body>
-    <!-- Botón de control de reproducción -->
-    <button class="play-pause-button" id="playPauseButton">Pause</button>
+    <!-- Botones de control -->
+    <div>
+        <button class="fullscreen-button" id="fullscreenButton">Full Screen</button>
+        <button class="play-pause-button" id="playPauseButton">Pause</button>
+    </div>
 
     <div class="container" id="video-container">
         <video id="videoElement" controls>
@@ -171,27 +182,20 @@
         const video = document.getElementById('videoElement');
         const audios = Array.from({ length: 9 }, (_, i) => document.getElementById('audio' + (i + 1)));
         const playPauseButton = document.getElementById('playPauseButton');
+        const fullscreenButton = document.getElementById('fullscreenButton');
 
         const videoContainer = document.getElementById('video-container');
         const controls = document.getElementById('controls');
         let timeout;
 
-        // Detectar si el video está en pantalla completa
-        function isFullscreen() {
-            return document.fullscreenElement === videoContainer;
-        }
-
-        // Mostrar controles cuando el cursor entra en el área del video
+        // Muestra los controles cuando el cursor entra en el área del video
         videoContainer.addEventListener('mousemove', showControls);
 
-        // Mostrar controles en pantalla completa
-        video.addEventListener('fullscreenchange', () => {
-            if (isFullscreen()) {
-                controls.classList.add('visible');
-            } else {
-                controls.classList.remove('visible');
-            }
-        });
+        // Reproduce los audios cuando el video empieza a reproducirse
+        video.addEventListener('play', playAllAudios);
+
+        // Pausa los audios cuando el video se pausa
+        video.addEventListener('pause', pauseAllAudios);
 
         // Manejador de clics en el contenedor del video para controlar la reproducción
         videoContainer.addEventListener('click', function() {
@@ -216,20 +220,27 @@
             }
         });
 
-        function showControls() {
-            if (!isFullscreen()) {
-                controls.classList.remove('hidden');
-                controls.classList.add('visible');
-                clearTimeout(timeout);
-                timeout = setTimeout(hideControls, 2000);
+        // Manejador de clics en el botón de pantalla completa
+        fullscreenButton.addEventListener('click', function () {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+                fullscreenButton.classList.remove('fullscreen');
+            } else {
+                videoContainer.requestFullscreen();
+                fullscreenButton.classList.add('fullscreen');
             }
+        });
+
+        function showControls() {
+            controls.classList.remove('hidden');
+            controls.classList.add('visible');
+            clearTimeout(timeout);
+            timeout = setTimeout(hideControls, 2000);
         }
 
         function hideControls() {
-            if (!isFullscreen()) {
-                controls.classList.remove('visible');
-                controls.classList.add('hidden');
-            }
+            controls.classList.remove('visible');
+            controls.classList.add('hidden');
         }
 
         function playAllAudios() {
@@ -349,7 +360,6 @@
 
         // Inicia la funcionalidad de ocultar controles
         showControls();
-        startSyncCheck();
     </script>
 </body>
 </html>
