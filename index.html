@@ -61,19 +61,16 @@
             transition: opacity 0.3s ease;
         }
 
-        /* Clase para el botón de mute cuando está activo */
         .muted {
             background-color: blue;
             color: white;
         }
 
-        /* Clase para el botón de solo cuando está activo */
         .solo {
             background-color: green;
             color: white;
         }
 
-        /* Estilos para el botón de control de reproducción */
         .play-pause-button {
             margin-bottom: 20px;
             padding: 10px 20px;
@@ -183,10 +180,15 @@
         // Pausa los audios cuando el video se pausa
         video.addEventListener('pause', pauseAllAudios);
 
-        // Comienza la sincronización periódica
-        video.addEventListener('play', startSyncCheck);
+        // Manejador de clics en el contenedor del video para controlar la reproducción
+        videoContainer.addEventListener('click', function() {
+            if (video.paused) {
+                video.play();
+                playAllAudios();
+            }
+        });
 
-        // Maneja el botón de Play/Pause
+        // Manejador de clics en el botón de Play/Pause
         playPauseButton.addEventListener('click', function () {
             if (video.paused) {
                 video.play();
@@ -324,7 +326,6 @@
             });
         }
 
-        // Evita la propagación de eventos en los controles
         function stopPropagation(event) {
             event.stopPropagation();
         }
