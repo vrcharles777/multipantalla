@@ -108,8 +108,7 @@
             margin-right: 10px;
         }
 
-        /* Capa encima del video */
-        .overlay {
+        .play-overlay {
             position: absolute;
             top: 0;
             left: 0;
@@ -124,10 +123,6 @@
             cursor: pointer;
             z-index: 10;
         }
-
-        .overlay.hidden {
-            display: none;
-        }
     </style>
 </head>
 <body>
@@ -140,13 +135,13 @@
     </div>
 
     <div class="container" id="video-container">
-        <!-- Capa para controlar la reproducción -->
-        <div class="overlay" id="overlay">Click to Play</div>
-
         <video id="videoElement" controls>
             <source src="movie.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
+
+        <!-- Capa de reproducción -->
+        <div id="playOverlay" class="play-overlay">Click to Play</div>
 
         <!-- Controles superpuestos -->
         <div class="controls" id="controls">
@@ -158,6 +153,7 @@
                     <button onclick="toggleSolo(1); stopPropagation(event);" id="soloBtn1">Solo</button>
                 </div>
             </div>
+            <!-- Repetir para los demás controles -->
             <div class="control-group">
                 <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVolume(2, this.value)" onclick="stopPropagation(event)">
                 <div class="button-container">
@@ -229,14 +225,15 @@
     <audio id="audio9" preload="auto" src="audio9.mp3"></audio>
 
     <script>
-        const SYNC_CHECK_INTERVAL = 100; // Intervalo de chequeo en milisegundos
+        const SYNC_CHECK_INTERVAL = 500; // 500 ms
         const SYNC_TOLERANCE = 0.25; // 0.25 segundos
 
         const video = document.getElementById('videoElement');
         const audios = Array.from({ length: 9 }, (_, i) => document.getElementById('audio' + (i + 1)));
         const playPauseButton = document.getElementById('playPauseButton');
         const fullscreenButton = document.getElementById('fullscreenButton');
-        const overlay = document.getElementById('overlay');
+        const playOverlay = document.getElementById('playOverlay');
+
         const videoContainer = document.getElementById('video-container');
         const controls = document.getElementById('controls');
         let timeout;
@@ -250,11 +247,11 @@
         // Pausa los audios cuando el video se pausa
         video.addEventListener('pause', pauseAllAudios);
 
-        // Manejador de clics en la capa overlay
-        overlay.addEventListener('click', function() {
+        // Manejador de clics en la capa de reproducción
+        playOverlay.addEventListener('click', function() {
             video.play();
             playAllAudios();
-            overlay.classList.add('hidden'); // Ocultar capa después de iniciar reproducción
+            playOverlay.style.display = 'none'; // Oculta la capa cuando se reproduce el video
             playPauseButton.textContent = 'Pause';
             playPauseButton.classList.remove('paused');
         });
@@ -264,6 +261,9 @@
             if (video.paused) {
                 video.play();
                 playAllAudios();
+                playOverlay.style.display = 'none'; // Oculta la capa cuando se reproduce el video
+                playPauseButton.textContent = 'Pause';
+                playPauseButton.classList.remove('paused');
             }
         });
 
@@ -272,6 +272,7 @@
             if (video.paused) {
                 video.play();
                 playAllAudios();
+                playOverlay.style.display = 'none'; // Oculta la capa cuando se reproduce el video
                 playPauseButton.textContent = 'Pause';
                 playPauseButton.classList.remove('paused');
             } else {
@@ -279,6 +280,7 @@
                 pauseAllAudios();
                 playPauseButton.textContent = 'Play';
                 playPauseButton.classList.add('paused');
+                playOverlay.style.display = 'flex'; // Muestra la capa cuando se pausa el video
             }
         });
 
