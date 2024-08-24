@@ -35,6 +35,12 @@
             grid-template-rows: repeat(3, 1fr);
             gap: 10px;
             pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .controls.visible {
+            opacity: 1;
         }
 
         .control-group {
@@ -42,23 +48,11 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            opacity: 1;
-            pointer-events: all;
         }
 
         .control-group input[type="range"] {
             width: 80px;
             margin: 5px;
-        }
-
-        .hidden {
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .visible {
-            opacity: 1;
-            transition: opacity 0.3s ease;
         }
 
         .muted {
@@ -74,15 +68,12 @@
         .play-pause-button, .fullscreen-button {
             margin-bottom: 20px;
             padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
-        }
-
-        .play-pause-button {
-            background-color: #007BFF;
-            color: white;
         }
 
         .play-pause-button.paused {
@@ -91,19 +82,49 @@
 
         .fullscreen-button {
             background-color: #28a745;
-            color: white;
             margin-right: 10px;
         }
 
-        .fullscreen-button.fullscreen {
-            background-color: #007BFF;
+        /* Estilos para el botón Play en el centro del video */
+        .play-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .play-overlay.hidden {
+            display: none;
+        }
+
+        /* Ocultar controles cuando no está en pantalla completa */
+        .fullscreen-controls {
+            display: none;
+        }
+
+        .fullscreen-controls.fullscreen {
+            display: block;
         }
     </style>
 </head>
 <body>
-    <!-- Botones de control -->
-    <div>
-        <button class="fullscreen-button" id="fullscreenButton">Full Screen</button>
+    <!-- Contenedor de controles -->
+    <div id="controls-container">
+        <!-- Botón de pantalla completa -->
+        <button class="fullscreen-button" id="fullscreenButton">Fullscreen</button>
+        <!-- Botón de control de reproducción -->
         <button class="play-pause-button" id="playPauseButton">Pause</button>
     </div>
 
@@ -162,6 +183,9 @@
                 <button onclick="soloAudio(9); stopPropagation(event);" id="soloBtn9">Solo</button>
             </div>
         </div>
+
+        <!-- Botón Play en el centro del video -->
+        <button class="play-overlay" id="playOverlay">▶</button>
     </div>
 
     <!-- Audios (9 ejemplos) -->
@@ -183,16 +207,38 @@
         const audios = Array.from({ length: 9 }, (_, i) => document.getElementById('audio' + (i + 1)));
         const playPauseButton = document.getElementById('playPauseButton');
         const fullscreenButton = document.getElementById('fullscreenButton');
-
+        const playOverlay = document.getElementById('playOverlay');
         const videoContainer = document.getElementById('video-container');
         const controls = document.getElementById('controls');
         let timeout;
+
+        // Detecta cambios en el estado de pantalla completa
+        function onFullscreenChange() {
+            const isFullscreen = document.fullscreenElement === video || 
+                document.mozFullscreenElement === video || 
+                document.webkitFullscreenElement === video || 
+                document.msFullscreenElement === video;
+            
+            if (isFullscreen) {
+                controls.classList.add('fullscreen');
+            } else {
+                controls.classList.remove('fullscreen');
+            }
+        }
+
+        document.addEventListener('fullscreenchange', onFullscreenChange);
+        document.addEventListener('mozfullscreenchange', onFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', onFullscreenChange);
+        document.addEventListener('msfullscreenchange', onFullscreenChange);
 
         // Muestra los controles cuando el cursor entra en el área del video
         videoContainer.addEventListener('mousemove', showControls);
 
         // Reproduce los audios cuando el video empieza a reproducirse
-        video.addEventListener('play', playAllAudios);
+        video.addEventListener('play', function() {
+            playAllAudios();
+            playOverlay.classList.add('hidden');
+        });
 
         // Pausa los audios cuando el video se pausa
         video.addEventListener('pause', pauseAllAudios);
@@ -220,27 +266,41 @@
             }
         });
 
-        // Manejador de clics en el botón de pantalla completa
+        // Manejador de clics en el botón de Pantalla Completa
         fullscreenButton.addEventListener('click', function () {
-            if (document.fullscreenElement) {
-                document.exitFullscreen();
-                fullscreenButton.classList.remove('fullscreen');
-            } else {
-                videoContainer.requestFullscreen();
-                fullscreenButton.classList.add('fullscreen');
+            if (video.requestFullscreen) {
+                video.requestFullscreen();
+            } else if (video.mozRequestFullScreen) { // Firefox
+                video.mozRequestFullScreen();
+            } else if (video.webkitRequestFullscreen) { // Chrome, Safari y Opera
+                video.webkitRequestFullscreen();
+            } else if (video.msRequestFullscreen) { // IE/Edge
+                video.msRequestFullscreen();
+            }
+        });
+
+        // Manejador de clics en el botón Play en el centro del video
+        playOverlay.addEventListener('click', function() {
+            video.requestFullscreen();
+            if (video.paused) {
+                video.play();
+                playAllAudios();
+                playOverlay.classList.add('hidden');
             }
         });
 
         function showControls() {
-            controls.classList.remove('hidden');
             controls.classList.add('visible');
             clearTimeout(timeout);
             timeout = setTimeout(hideControls, 2000);
         }
 
         function hideControls() {
-            controls.classList.remove('visible');
-            controls.classList.add('hidden');
+            if (controls.classList.contains('fullscreen')) {
+                controls.classList.add('visible');
+            } else {
+                controls.classList.remove('visible');
+            }
         }
 
         function playAllAudios() {
