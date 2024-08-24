@@ -85,6 +85,11 @@
         .play-pause-button.paused {
             background-color: #28a745;
         }
+
+        /* Estilo para fullscreen */
+        .fullscreen .controls {
+            pointer-events: auto;
+        }
     </style>
 </head>
 <body>
@@ -171,14 +176,22 @@
         const controls = document.getElementById('controls');
         let timeout;
 
-        // Muestra los controles cuando el cursor entra en el área del video
+        // Detectar si el video está en pantalla completa
+        function isFullscreen() {
+            return document.fullscreenElement === videoContainer;
+        }
+
+        // Mostrar controles cuando el cursor entra en el área del video
         videoContainer.addEventListener('mousemove', showControls);
 
-        // Reproduce los audios cuando el video empieza a reproducirse
-        video.addEventListener('play', playAllAudios);
-
-        // Pausa los audios cuando el video se pausa
-        video.addEventListener('pause', pauseAllAudios);
+        // Mostrar controles en pantalla completa
+        video.addEventListener('fullscreenchange', () => {
+            if (isFullscreen()) {
+                controls.classList.add('visible');
+            } else {
+                controls.classList.remove('visible');
+            }
+        });
 
         // Manejador de clics en el contenedor del video para controlar la reproducción
         videoContainer.addEventListener('click', function() {
@@ -204,15 +217,19 @@
         });
 
         function showControls() {
-            controls.classList.remove('hidden');
-            controls.classList.add('visible');
-            clearTimeout(timeout);
-            timeout = setTimeout(hideControls, 2000);
+            if (!isFullscreen()) {
+                controls.classList.remove('hidden');
+                controls.classList.add('visible');
+                clearTimeout(timeout);
+                timeout = setTimeout(hideControls, 2000);
+            }
         }
 
         function hideControls() {
-            controls.classList.remove('visible');
-            controls.classList.add('hidden');
+            if (!isFullscreen()) {
+                controls.classList.remove('visible');
+                controls.classList.add('hidden');
+            }
         }
 
         function playAllAudios() {
@@ -332,6 +349,7 @@
 
         // Inicia la funcionalidad de ocultar controles
         showControls();
+        startSyncCheck();
     </script>
 </body>
 </html>
