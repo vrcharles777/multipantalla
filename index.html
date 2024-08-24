@@ -6,31 +6,24 @@
         body {
             margin: 0;
             overflow: hidden; /* Evita barras de desplazamiento */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: #000;
         }
 
         .container {
             position: relative;
-            width: auto;
-            height: auto;
-            max-width: 80vw; /* Ajusta el tamaño máximo del video */
-            max-height: 80vh; /* Ajusta el tamaño máximo del video */
+            width: 100vw; /* Ancho completo de la ventana */
+            height: 100vh; /* Alto completo de la ventana */
         }
 
         video {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Ajusta el video para no recortarlo */
+            object-fit: cover; /* Ajusta el video para llenar el contenedor */
         }
 
         /* Contenedor de controles (en la parte superior central) */
         #controls-container {
             position: absolute;
-            top: 10px; /* Ajusta la distancia desde la parte superior según sea necesario */
+            top: 20px; /* Ajusta la distancia desde la parte superior según sea necesario */
             left: 50%;
             transform: translateX(-50%);
             display: flex;
@@ -130,6 +123,12 @@
         .play-overlay.hidden {
             display: none;
         }
+
+        /* Ajusta el contenedor del video para mantener el espacio superior */
+        .video-container-adjust {
+            padding-top: 60px; /* Espacio para los botones */
+            position: relative; /* Para que el botón Play esté centrado en el video */
+        }
     </style>
 </head>
 <body>
@@ -141,7 +140,7 @@
         <button class="control-button play-pause-button" id="playPauseButton">Pause</button>
     </div>
 
-    <div class="container" id="video-container">
+    <div class="container video-container-adjust" id="video-container">
         <video id="videoElement" controls>
             <source src="movie.mp4" type="video/mp4">
             Your browser does not support the video tag.
