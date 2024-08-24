@@ -5,39 +5,61 @@
     <style>
         body {
             margin: 0;
+            overflow: hidden; /* Evita barras de desplazamiento */
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            justify-content: flex-start;
             height: 100vh;
-            overflow: hidden;
+            background: #000;
         }
 
-        .controls-container {
+        .container {
             position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            padding: 10px 0;
-        }
-
-        .video-container {
-            position: relative;
-            width: 80%; /* El video ocupará el 80% del ancho de la pantalla */
-            max-width: 1000px; /* Ancho máximo del video */
-            height: auto; /* La altura se ajusta automáticamente para mantener la relación de aspecto */
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            width: auto;
+            height: auto;
+            max-width: 80vw; /* Ajusta el tamaño máximo del video */
+            max-height: 80vh; /* Ajusta el tamaño máximo del video */
         }
 
         video {
             width: 100%;
-            height: auto;
-            display: block;
+            height: 100%;
+            object-fit: contain; /* Ajusta el video para no recortarlo */
         }
 
+        /* Contenedor de controles (en la parte superior central) */
+        #controls-container {
+            position: absolute;
+            top: 10px; /* Ajusta la distancia desde la parte superior según sea necesario */
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            z-index: 10; /* Asegúrate de que los controles estén sobre el video */
+        }
+
+        /* Botones de control */
+        .control-button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .play-pause-button.paused {
+            background-color: #28a745;
+        }
+
+        .fullscreen-button {
+            background-color: #28a745;
+        }
+
+        /* Controles del video (superpuestos) */
         .controls {
             position: absolute;
             top: 0;
@@ -48,7 +70,7 @@
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
             gap: 10px;
-            pointer-events: none;
+            pointer-events: none; /* Evita la interacción directa con los controles */
         }
 
         .control-group {
@@ -85,23 +107,7 @@
             color: white;
         }
 
-        .play-pause-button, .fullscreen-button {
-            margin-bottom: 0;
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin: 0 10px;
-        }
-
-        .play-pause-button.paused {
-            background-color: #28a745;
-        }
-
-        /* Estilos para el botón Play en el centro del video */
+        /* Botón Play en el centro del video */
         .play-overlay {
             position: absolute;
             top: 50%;
@@ -127,15 +133,15 @@
     </style>
 </head>
 <body>
-    <!-- Contenedor de controles fuera del área del video -->
-    <div class="controls-container">
+    <!-- Contenedor de controles -->
+    <div id="controls-container">
         <!-- Botón de pantalla completa -->
-        <button class="fullscreen-button" id="fullscreenButton">Fullscreen</button>
+        <button class="control-button fullscreen-button" id="fullscreenButton">Fullscreen</button>
         <!-- Botón de control de reproducción -->
-        <button class="play-pause-button" id="playPauseButton">Pause</button>
+        <button class="control-button play-pause-button" id="playPauseButton">Pause</button>
     </div>
 
-    <div class="video-container" id="video-container">
+    <div class="container" id="video-container">
         <video id="videoElement" controls>
             <source src="movie.mp4" type="video/mp4">
             Your browser does not support the video tag.
