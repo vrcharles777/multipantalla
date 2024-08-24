@@ -22,6 +22,7 @@
         video {
             width: 100%;
             height: 100%;
+            display: block;
         }
 
         .controls {
@@ -35,6 +36,9 @@
             grid-template-rows: repeat(3, 1fr);
             gap: 10px;
             pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 10;
         }
 
         .control-group {
@@ -42,8 +46,6 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            opacity: 1;
-            pointer-events: all;
         }
 
         .control-group input[type="range"] {
@@ -78,14 +80,32 @@
             background-color: green;
         }
 
-        .hidden {
+        .fullscreen-controls {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 10px;
+            pointer-events: none;
             opacity: 0;
             transition: opacity 0.3s ease;
+            z-index: 10;
         }
 
-        .visible {
+        .fullscreen-controls.visible {
             opacity: 1;
-            transition: opacity 0.3s ease;
+        }
+
+        .fullscreen-controls .control-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            pointer-events: all;
         }
 
         .play-pause-button, .fullscreen-button {
@@ -211,9 +231,77 @@
                 </div>
             </div>
         </div>
+        <!-- Controles de pantalla completa -->
+        <div class="fullscreen-controls" id="fullscreenControls">
+            <!-- Los mismos controles, adaptados para pantalla completa -->
+            <div class="control-group">
+                <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVolume(1, this.value)" onclick="stopPropagation(event)">
+                <div class="button-container">
+                    <button onclick="toggleMute(1); stopPropagation(event);" id="muteBtn1">Mute</button>
+                    <button onclick="toggleSolo(1); stopPropagation(event);" id="soloBtn1">Solo</button>
+                </div>
+            </div>
+            <!-- Repetir para los demás controles -->
+            <div class="control-group">
+                <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVolume(2, this.value)" onclick="stopPropagation(event)">
+                <div class="button-container">
+                    <button onclick="toggleMute(2); stopPropagation(event);" id="muteBtn2">Mute</button>
+                    <button onclick="toggleSolo(2); stopPropagation(event);" id="soloBtn2">Solo</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVolume(3, this.value)" onclick="stopPropagation(event)">
+                <div class="button-container">
+                    <button onclick="toggleMute(3); stopPropagation(event);" id="muteBtn3">Mute</button>
+                    <button onclick="toggleSolo(3); stopPropagation(event);" id="soloBtn3">Solo</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVolume(4, this.value)" onclick="stopPropagation(event)">
+                <div class="button-container">
+                    <button onclick="toggleMute(4); stopPropagation(event);" id="muteBtn4">Mute</button>
+                    <button onclick="toggleSolo(4); stopPropagation(event);" id="soloBtn4">Solo</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVolume(5, this.value)" onclick="stopPropagation(event)">
+                <div class="button-container">
+                    <button onclick="toggleMute(5); stopPropagation(event);" id="muteBtn5">Mute</button>
+                    <button onclick="toggleSolo(5); stopPropagation(event);" id="soloBtn5">Solo</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVolume(6, this.value)" onclick="stopPropagation(event)">
+                <div class="button-container">
+                    <button onclick="toggleMute(6); stopPropagation(event);" id="muteBtn6">Mute</button>
+                    <button onclick="toggleSolo(6); stopPropagation(event);" id="soloBtn6">Solo</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVolume(7, this.value)" onclick="stopPropagation(event)">
+                <div class="button-container">
+                    <button onclick="toggleMute(7); stopPropagation(event);" id="muteBtn7">Mute</button>
+                    <button onclick="toggleSolo(7); stopPropagation(event);" id="soloBtn7">Solo</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVolume(8, this.value)" onclick="stopPropagation(event)">
+                <div class="button-container">
+                    <button onclick="toggleMute(8); stopPropagation(event);" id="muteBtn8">Mute</button>
+                    <button onclick="toggleSolo(8); stopPropagation(event);" id="soloBtn8">Solo</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVolume(9, this.value)" onclick="stopPropagation(event)">
+                <div class="button-container">
+                    <button onclick="toggleMute(9); stopPropagation(event);" id="muteBtn9">Mute</button>
+                    <button onclick="toggleSolo(9); stopPropagation(event);" id="soloBtn9">Solo</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Audios (9 ejemplos) -->
+    <!-- Audios para sincronización -->
     <audio id="audio1" preload="auto" src="audio1.mp3"></audio>
     <audio id="audio2" preload="auto" src="audio2.mp3"></audio>
     <audio id="audio3" preload="auto" src="audio3.mp3"></audio>
@@ -233,9 +321,10 @@
         const playPauseButton = document.getElementById('playPauseButton');
         const fullscreenButton = document.getElementById('fullscreenButton');
         const playOverlay = document.getElementById('playOverlay');
+        const controls = document.getElementById('controls');
+        const fullscreenControls = document.getElementById('fullscreenControls');
 
         const videoContainer = document.getElementById('video-container');
-        const controls = document.getElementById('controls');
         let timeout;
 
         // Muestra los controles cuando el cursor entra en el área del video
@@ -297,127 +386,55 @@
             }
         });
 
-        function showControls() {
-            controls.classList.remove('hidden');
-            controls.classList.add('visible');
-            clearTimeout(timeout);
-            timeout = setTimeout(hideControls, 2000);
-        }
+        video.addEventListener('fullscreenchange', function() {
+            if (document.fullscreenElement) {
+                controls.style.display = 'none'; // Oculta los controles en modo normal
+                fullscreenControls.classList.add('visible');
+            } else {
+                controls.style.display = 'grid'; // Muestra los controles en modo normal
+                fullscreenControls.classList.remove('visible');
+            }
+        });
 
-        function hideControls() {
-            controls.classList.remove('visible');
-            controls.classList.add('hidden');
+        // Actualiza la sincronización de los audios
+        function checkSync() {
+            const videoCurrentTime = video.currentTime;
+            audios.forEach(audio => {
+                if (Math.abs(videoCurrentTime - audio.currentTime) > SYNC_TOLERANCE) {
+                    audio.currentTime = videoCurrentTime;
+                }
+            });
         }
 
         function playAllAudios() {
             audios.forEach(audio => {
-                audio.currentTime = video.currentTime;
-                audio.play().catch(error => {
-                    console.error(`Error al reproducir el audio:`, error);
-                });
+                audio.play();
             });
+            checkSync();
         }
 
         function pauseAllAudios() {
-            audios.forEach(audio => audio.pause());
-        }
-
-        function setVolume(id, value) {
-            const audio = document.getElementById('audio' + id);
-            audio.volume = value;
-        }
-
-        function toggleMute(id) {
-            const audio = document.getElementById('audio' + id);
-            const muteButton = document.getElementById('muteBtn' + id);
-            const soloButton = document.getElementById('soloBtn' + id);
-
-            if (!soloButton.classList.contains('solo')) {
-                audio.muted = !audio.muted;
-                muteButton.classList.toggle('muted', audio.muted);
-            }
-        }
-
-        function toggleSolo(id) {
-            const soloButton = document.getElementById('soloBtn' + id);
-            const muteButton = document.getElementById('muteBtn' + id);
-            const audio = document.getElementById('audio' + id);
-            const isSoloActive = soloButton.classList.contains('solo');
-            const allSoloButtons = document.querySelectorAll('.solo');
-
-            if (isSoloActive) {
-                if (allSoloButtons.length === 1) {
-                    restoreAllAudios();
-                }
-                soloButton.classList.remove('solo');
-                audio.muted = false;
-            } else {
-                soloButton.classList.add('solo');
-                audio.muted = false;
-                muteButton.classList.remove('muted');
-                muteOtherAudios(id);
-            }
-        }
-
-        function muteOtherAudios(activeId) {
-            audios.forEach((audio, index) => {
-                const i = index + 1;
-                if (i !== activeId) {
-                    const soloButton = document.getElementById('soloBtn' + i);
-                    const muteButton = document.getElementById('muteBtn' + i);
-                    if (!soloButton.classList.contains('solo')) {
-                        audio.muted = true;
-                        muteButton.classList.add('muted');
-                    }
-                }
-            });
-        }
-
-        function restoreAllAudios() {
-            audios.forEach((audio, index) => {
-                const i = index + 1;
-                const muteButton = document.getElementById('muteBtn' + i);
-                audio.muted = false;
-                muteButton.classList.remove('muted');
-            });
-        }
-
-        function updateMuteButtons() {
-            audios.forEach((audio, index) => {
-                const i = index + 1;
-                const muteButton = document.getElementById('muteBtn' + i);
-                muteButton.classList.toggle('muted', audio.muted);
-            });
-        }
-
-        function checkSync() {
-            const videoTime = video.currentTime;
-            const isDesynchronized = audios.some(audio => Math.abs(audio.currentTime - videoTime) > SYNC_TOLERANCE);
-
-            if (isDesynchronized) {
-                resyncMedia();
-            }
-        }
-
-        function startSyncCheck() {
-            setInterval(checkSync, SYNC_CHECK_INTERVAL);
-        }
-
-        function syncMedia() {
-            const videoTime = video.currentTime;
             audios.forEach(audio => {
-                audio.currentTime = videoTime;
-                audio.play().catch(error => {
-                    console.error(`Error al reproducir el audio:`, error);
-                });
+                audio.pause();
             });
         }
 
-        function resyncMedia() {
-            video.pause();
-            syncMedia();
-            video.play().catch(error => {
-                console.error('Error al reproducir el video:', error);
+        function setVolume(index, volume) {
+            audios[index - 1].volume = volume;
+        }
+
+        function toggleMute(index) {
+            const audio = audios[index - 1];
+            audio.muted = !audio.muted;
+        }
+
+        function toggleSolo(index) {
+            audios.forEach((audio, i) => {
+                if (i === index - 1) {
+                    audio.volume = 1;
+                } else {
+                    audio.volume = 0;
+                }
             });
         }
 
@@ -425,10 +442,13 @@
             event.stopPropagation();
         }
 
-        // Inicia la funcionalidad de ocultar controles
-        showControls();
-        // Inicia el chequeo de sincronización
-        startSyncCheck();
+        function showControls() {
+            controls.style.opacity = '1';
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                controls.style.opacity = '0';
+            }, 3000); // Oculta los controles después de 3 segundos
+        }
     </script>
 </body>
 </html>
