@@ -4,33 +4,37 @@
     <title>Reproductor</title>
     <style>
         body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
             margin: 0;
-            overflow: hidden; /* Evita barras de desplazamiento */
+            background-color: #f0f0f0;
         }
 
         .container {
             position: relative;
-            width: 100vw; /* Ancho completo de la ventana */
-            height: 100vh; /* Alto completo de la ventana */
+            width: 640px;
+            height: 360px;
         }
 
         video {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Ajusta el video para llenar el contenedor */
         }
 
         .controls {
             position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
+            top: 0;
+            left: 0;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
             gap: 10px;
-            pointer-events: none; /* Evita la interacción directa con los controles */
+            pointer-events: none;
         }
 
         .control-group {
@@ -43,7 +47,7 @@
         }
 
         .control-group input[type="range"] {
-            width: 60%;
+            width: 80px;
             margin: 5px;
         }
 
@@ -114,7 +118,7 @@
 </head>
 <body>
     <!-- Contenedor de controles -->
-    <div id="controls-container" style="position: absolute; top: 20px; left: 20px;">
+    <div id="controls-container">
         <!-- Botón de pantalla completa -->
         <button class="fullscreen-button" id="fullscreenButton">Fullscreen</button>
         <!-- Botón de control de reproducción -->
