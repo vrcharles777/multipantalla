@@ -48,7 +48,7 @@
         }
 
         .control-group input[type="range"] {
-            width: 80px;
+            width: 150px; /* Ajusta el ancho según sea necesario */
             margin: 5px;
         }
 
@@ -307,8 +307,10 @@
         }
 
         function hideControls() {
-            controls.classList.remove('visible');
-            controls.classList.add('hidden');
+            if (!document.querySelector('.controls:hover') && !document.querySelector('.controls input[type="range"]:focus')) {
+                controls.classList.remove('visible');
+                controls.classList.add('hidden');
+            }
         }
 
         function playAllAudios() {
