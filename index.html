@@ -48,28 +48,47 @@
 
         .control-group input[type="range"] {
             width: 80px;
-            margin-bottom: 10px; /* Ajuste de margen */
+            margin: 5px;
+        }
+
+        .control-group .button-container {
+            display: flex;
+            gap: 10px;
         }
 
         .control-group button {
-            width: 40px; /* Botones cuadrados */
+            width: 40px;
             height: 40px;
-            margin: 0 5px; /* Espacio entre botones */
+            background-color: #007BFF;
+            color: white;
             border: none;
+            border-radius: 5px;
             cursor: pointer;
+            font-size: 14px;
+            text-align: center;
+            line-height: 40px;
+            padding: 0;
         }
 
-        .control-group .muted {
+        .control-group button.muted {
             background-color: blue;
-            color: white;
         }
 
-        .control-group .solo {
+        .control-group button.solo {
             background-color: green;
-            color: white;
         }
 
-        .play-pause-button {
+        .hidden {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .visible {
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .play-pause-button, .fullscreen-button {
             margin-bottom: 20px;
             padding: 10px 20px;
             background-color: #007BFF;
@@ -83,11 +102,21 @@
         .play-pause-button.paused {
             background-color: #28a745;
         }
+
+        .fullscreen-button {
+            background-color: #28a745;
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
-    <!-- Botón de control de reproducción -->
-    <button class="play-pause-button" id="playPauseButton">Pause</button>
+    <!-- Contenedor de controles -->
+    <div id="controls-container">
+        <!-- Botón de pantalla completa -->
+        <button class="fullscreen-button" id="fullscreenButton">Fullscreen</button>
+        <!-- Botón de control de reproducción -->
+        <button class="play-pause-button" id="playPauseButton">Pause</button>
+    </div>
 
     <div class="container" id="video-container">
         <video id="videoElement" controls>
@@ -100,63 +129,63 @@
             <!-- 9 zonas con controles deslizantes -->
             <div class="control-group">
                 <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVolume(1, this.value)" onclick="stopPropagation(event)">
-                <div>
+                <div class="button-container">
                     <button onclick="muteAudio(1); stopPropagation(event);" id="muteBtn1">Mute</button>
                     <button onclick="soloAudio(1); stopPropagation(event);" id="soloBtn1">Solo</button>
                 </div>
             </div>
             <div class="control-group">
                 <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVolume(2, this.value)" onclick="stopPropagation(event)">
-                <div>
+                <div class="button-container">
                     <button onclick="muteAudio(2); stopPropagation(event);" id="muteBtn2">Mute</button>
                     <button onclick="soloAudio(2); stopPropagation(event);" id="soloBtn2">Solo</button>
                 </div>
             </div>
             <div class="control-group">
                 <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVolume(3, this.value)" onclick="stopPropagation(event)">
-                <div>
+                <div class="button-container">
                     <button onclick="muteAudio(3); stopPropagation(event);" id="muteBtn3">Mute</button>
                     <button onclick="soloAudio(3); stopPropagation(event);" id="soloBtn3">Solo</button>
                 </div>
             </div>
             <div class="control-group">
                 <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVolume(4, this.value)" onclick="stopPropagation(event)">
-                <div>
+                <div class="button-container">
                     <button onclick="muteAudio(4); stopPropagation(event);" id="muteBtn4">Mute</button>
                     <button onclick="soloAudio(4); stopPropagation(event);" id="soloBtn4">Solo</button>
                 </div>
             </div>
             <div class="control-group">
                 <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVolume(5, this.value)" onclick="stopPropagation(event)">
-                <div>
+                <div class="button-container">
                     <button onclick="muteAudio(5); stopPropagation(event);" id="muteBtn5">Mute</button>
                     <button onclick="soloAudio(5); stopPropagation(event);" id="soloBtn5">Solo</button>
                 </div>
             </div>
             <div class="control-group">
                 <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVolume(6, this.value)" onclick="stopPropagation(event)">
-                <div>
+                <div class="button-container">
                     <button onclick="muteAudio(6); stopPropagation(event);" id="muteBtn6">Mute</button>
                     <button onclick="soloAudio(6); stopPropagation(event);" id="soloBtn6">Solo</button>
                 </div>
             </div>
             <div class="control-group">
                 <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVolume(7, this.value)" onclick="stopPropagation(event)">
-                <div>
+                <div class="button-container">
                     <button onclick="muteAudio(7); stopPropagation(event);" id="muteBtn7">Mute</button>
                     <button onclick="soloAudio(7); stopPropagation(event);" id="soloBtn7">Solo</button>
                 </div>
             </div>
             <div class="control-group">
                 <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVolume(8, this.value)" onclick="stopPropagation(event)">
-                <div>
+                <div class="button-container">
                     <button onclick="muteAudio(8); stopPropagation(event);" id="muteBtn8">Mute</button>
                     <button onclick="soloAudio(8); stopPropagation(event);" id="soloBtn8">Solo</button>
                 </div>
             </div>
             <div class="control-group">
                 <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVolume(9, this.value)" onclick="stopPropagation(event)">
-                <div>
+                <div class="button-container">
                     <button onclick="muteAudio(9); stopPropagation(event);" id="muteBtn9">Mute</button>
                     <button onclick="soloAudio(9); stopPropagation(event);" id="soloBtn9">Solo</button>
                 </div>
@@ -176,7 +205,192 @@
     <audio id="audio9" preload="auto" src="audio9.mp3"></audio>
 
     <script>
-        // [El código JavaScript se mantiene sin cambios]
+        const SYNC_CHECK_INTERVAL = 1000; // 1 segundo
+        const SYNC_TOLERANCE = 0.25; // 0.25 segundos
+
+        const video = document.getElementById('videoElement');
+        const audios = Array.from({ length: 9 }, (_, i) => document.getElementById('audio' + (i + 1)));
+        const playPauseButton = document.getElementById('playPauseButton');
+        const fullscreenButton = document.getElementById('fullscreenButton');
+
+        const videoContainer = document.getElementById('video-container');
+        const controls = document.getElementById('controls');
+        let timeout;
+
+        // Muestra los controles cuando el cursor entra en el área del video
+        videoContainer.addEventListener('mousemove', showControls);
+
+        // Reproduce los audios cuando el video empieza a reproducirse
+        video.addEventListener('play', playAllAudios);
+
+        // Pausa los audios cuando el video se pausa
+        video.addEventListener('pause', pauseAllAudios);
+
+        // Manejador de clics en el contenedor del video para controlar la reproducción
+        videoContainer.addEventListener('click', function() {
+            if (video.paused) {
+                video.play();
+                playAllAudios();
+            }
+        });
+
+        // Manejador de clics en el botón de Play/Pause
+        playPauseButton.addEventListener('click', function () {
+            if (video.paused) {
+                video.play();
+                playAllAudios();
+                playPauseButton.textContent = 'Pause';
+                playPauseButton.classList.remove('paused');
+            } else {
+                video.pause();
+                pauseAllAudios();
+                playPauseButton.textContent = 'Play';
+                playPauseButton.classList.add('paused');
+            }
+        });
+
+        // Manejador de clics en el botón de Pantalla Completa
+        fullscreenButton.addEventListener('click', function () {
+            if (video.requestFullscreen) {
+                video.requestFullscreen();
+            } else if (video.mozRequestFullScreen) { // Firefox
+                video.mozRequestFullScreen();
+            } else if (video.webkitRequestFullscreen) { // Chrome, Safari y Opera
+                video.webkitRequestFullscreen();
+            } else if (video.msRequestFullscreen) { // IE/Edge
+                video.msRequestFullscreen();
+            }
+        });
+
+        function showControls() {
+            controls.classList.remove('hidden');
+            controls.classList.add('visible');
+            clearTimeout(timeout);
+            timeout = setTimeout(hideControls, 2000);
+        }
+
+        function hideControls() {
+            controls.classList.remove('visible');
+            controls.classList.add('hidden');
+        }
+
+        function playAllAudios() {
+            audios.forEach(audio => {
+                audio.play().catch(error => {
+                    console.error(`Error al reproducir el audio:`, error);
+                });
+            });
+        }
+
+        function pauseAllAudios() {
+            audios.forEach(audio => audio.pause());
+        }
+
+        function setVolume(id, value) {
+            const audio = document.getElementById('audio' + id);
+            audio.volume = value;
+        }
+
+        function muteAudio(id) {
+            const audio = document.getElementById('audio' + id);
+            const muteButton = document.getElementById('muteBtn' + id);
+            const soloButton = document.getElementById('soloBtn' + id);
+
+            if (!soloButton.classList.contains('solo')) {
+                audio.muted = !audio.muted;
+                muteButton.classList.toggle('muted', audio.muted);
+            }
+        }
+
+        function soloAudio(id) {
+            const soloButton = document.getElementById('soloBtn' + id);
+            const muteButton = document.getElementById('muteBtn' + id);
+            const audio = document.getElementById('audio' + id);
+            const isSoloActive = soloButton.classList.contains('solo');
+            const allSoloButtons = document.querySelectorAll('.solo');
+
+            if (isSoloActive) {
+                if (allSoloButtons.length === 1) {
+                    restoreAllAudios();
+                }
+                soloButton.classList.remove('solo');
+                audio.muted = false;
+            } else {
+                soloButton.classList.add('solo');
+                audio.muted = false;
+                muteButton.classList.remove('muted');
+                muteOtherAudios(id);
+            }
+        }
+
+        function muteOtherAudios(activeId) {
+            audios.forEach((audio, index) => {
+                const i = index + 1;
+                if (i !== activeId) {
+                    const soloButton = document.getElementById('soloBtn' + i);
+                    const muteButton = document.getElementById('muteBtn' + i);
+                    if (!soloButton.classList.contains('solo')) {
+                        audio.muted = true;
+                        muteButton.classList.add('muted');
+                    }
+                }
+            });
+        }
+
+        function restoreAllAudios() {
+            audios.forEach((audio, index) => {
+                const i = index + 1;
+                const muteButton = document.getElementById('muteBtn' + i);
+                audio.muted = false;
+                muteButton.classList.remove('muted');
+            });
+        }
+
+        function updateMuteButtons() {
+            audios.forEach((audio, index) => {
+                const i = index + 1;
+                const muteButton = document.getElementById('muteBtn' + i);
+                muteButton.classList.toggle('muted', audio.muted);
+            });
+        }
+
+        function checkSync() {
+            const videoTime = video.currentTime;
+            const isDesynchronized = audios.some(audio => Math.abs(audio.currentTime - videoTime) > SYNC_TOLERANCE);
+
+            if (isDesynchronized) {
+                resyncMedia();
+            }
+        }
+
+        function startSyncCheck() {
+            setInterval(checkSync, SYNC_CHECK_INTERVAL);
+        }
+
+        function syncMedia() {
+            const videoTime = video.currentTime;
+            audios.forEach(audio => {
+                audio.currentTime = videoTime;
+                audio.play().catch(error => {
+                    console.error(`Error al reproducir el audio:`, error);
+                });
+            });
+        }
+
+        function resyncMedia() {
+            video.pause();
+            syncMedia();
+            video.play().catch(error => {
+                console.error('Error al reproducir el video:', error);
+            });
+        }
+
+        function stopPropagation(event) {
+            event.stopPropagation();
+        }
+
+        // Inicia la funcionalidad de ocultar controles
+        showControls();
     </script>
 </body>
 </html>
