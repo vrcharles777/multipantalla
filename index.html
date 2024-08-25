@@ -42,24 +42,19 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            margin: 0 10px; /* Separar cada grupo de controles */
+            margin: 0 10px;
             opacity: 1;
             pointer-events: all;
         }
 
         .control-group input[type="range"] {
-            width: 150px; /* Hacer el control deslizante más largo */
+            width: 160px; /* Hacer el control deslizante más largo */
             margin: 5px;
-            transition: opacity 0.3s ease;
-        }
-
-        .control-group input[type="range"].hidden {
-            opacity: 0;
         }
 
         .button-container {
             display: flex;
-            gap: 60px; /* Aumenta el espacio entre los botones */
+            gap: 60px;
             margin-top: 20px;
         }
 
@@ -154,7 +149,7 @@
         <div class="controls" id="controls">
             <!-- 9 zonas con controles deslizantes -->
             <div class="control-group">
-                <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVolume(1, this.value)" onmousedown="showSlider(this)" onmouseup="hideSlider(this)">
+                <input type="range" min="0" max="1" step="0.1" value="1" oninput="handleVolumeChange(1, this.value)" onclick="stopPropagation(event)">
                 <div class="button-container">
                     <button onclick="toggleMute(1); stopPropagation(event);" id="muteBtn1">Mute</button>
                     <button onclick="toggleSolo(1); stopPropagation(event);" id="soloBtn1">Solo</button>
@@ -162,56 +157,56 @@
             </div>
             <!-- Repetir para los demás controles -->
             <div class="control-group">
-                <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVolume(2, this.value)" onmousedown="showSlider(this)" onmouseup="hideSlider(this)">
+                <input type="range" min="0" max="1" step="0.1" value="1" oninput="handleVolumeChange(2, this.value)" onclick="stopPropagation(event)">
                 <div class="button-container">
                     <button onclick="toggleMute(2); stopPropagation(event);" id="muteBtn2">Mute</button>
                     <button onclick="toggleSolo(2); stopPropagation(event);" id="soloBtn2">Solo</button>
                 </div>
             </div>
             <div class="control-group">
-                <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVolume(3, this.value)" onmousedown="showSlider(this)" onmouseup="hideSlider(this)">
+                <input type="range" min="0" max="1" step="0.1" value="1" oninput="handleVolumeChange(3, this.value)" onclick="stopPropagation(event)">
                 <div class="button-container">
                     <button onclick="toggleMute(3); stopPropagation(event);" id="muteBtn3">Mute</button>
                     <button onclick="toggleSolo(3); stopPropagation(event);" id="soloBtn3">Solo</button>
                 </div>
             </div>
             <div class="control-group">
-                <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVolume(4, this.value)" onmousedown="showSlider(this)" onmouseup="hideSlider(this)">
+                <input type="range" min="0" max="1" step="0.1" value="1" oninput="handleVolumeChange(4, this.value)" onclick="stopPropagation(event)">
                 <div class="button-container">
                     <button onclick="toggleMute(4); stopPropagation(event);" id="muteBtn4">Mute</button>
                     <button onclick="toggleSolo(4); stopPropagation(event);" id="soloBtn4">Solo</button>
                 </div>
             </div>
             <div class="control-group">
-                <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVolume(5, this.value)" onmousedown="showSlider(this)" onmouseup="hideSlider(this)">
+                <input type="range" min="0" max="1" step="0.1" value="1" oninput="handleVolumeChange(5, this.value)" onclick="stopPropagation(event)">
                 <div class="button-container">
                     <button onclick="toggleMute(5); stopPropagation(event);" id="muteBtn5">Mute</button>
                     <button onclick="toggleSolo(5); stopPropagation(event);" id="soloBtn5">Solo</button>
                 </div>
             </div>
             <div class="control-group">
-                <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVolume(6, this.value)" onmousedown="showSlider(this)" onmouseup="hideSlider(this)">
+                <input type="range" min="0" max="1" step="0.1" value="1" oninput="handleVolumeChange(6, this.value)" onclick="stopPropagation(event)">
                 <div class="button-container">
                     <button onclick="toggleMute(6); stopPropagation(event);" id="muteBtn6">Mute</button>
                     <button onclick="toggleSolo(6); stopPropagation(event);" id="soloBtn6">Solo</button>
                 </div>
             </div>
             <div class="control-group">
-                <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVolume(7, this.value)" onmousedown="showSlider(this)" onmouseup="hideSlider(this)">
+                <input type="range" min="0" max="1" step="0.1" value="1" oninput="handleVolumeChange(7, this.value)" onclick="stopPropagation(event)">
                 <div class="button-container">
                     <button onclick="toggleMute(7); stopPropagation(event);" id="muteBtn7">Mute</button>
                     <button onclick="toggleSolo(7); stopPropagation(event);" id="soloBtn7">Solo</button>
                 </div>
             </div>
             <div class="control-group">
-                <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVolume(8, this.value)" onmousedown="showSlider(this)" onmouseup="hideSlider(this)">
+                <input type="range" min="0" max="1" step="0.1" value="1" oninput="handleVolumeChange(8, this.value)" onclick="stopPropagation(event)">
                 <div class="button-container">
                     <button onclick="toggleMute(8); stopPropagation(event);" id="muteBtn8">Mute</button>
                     <button onclick="toggleSolo(8); stopPropagation(event);" id="soloBtn8">Solo</button>
                 </div>
             </div>
             <div class="control-group">
-                <input type="range" min="0" max="1" step="0.1" value="1" oninput="setVolume(9, this.value)" onmousedown="showSlider(this)" onmouseup="hideSlider(this)">
+                <input type="range" min="0" max="1" step="0.1" value="1" oninput="handleVolumeChange(9, this.value)" onclick="stopPropagation(event)">
                 <div class="button-container">
                     <button onclick="toggleMute(9); stopPropagation(event);" id="muteBtn9">Mute</button>
                     <button onclick="toggleSolo(9); stopPropagation(event);" id="soloBtn9">Solo</button>
@@ -234,19 +229,21 @@
     <script>
         const SYNC_CHECK_INTERVAL = 500; // 500 ms
         const SYNC_TOLERANCE = 0.25; // 0.25 segundos
+        const VOLUME_HIDE_DELAY = 2000; // 2 segundos
 
         const video = document.getElementById('videoElement');
         const audios = Array.from({ length: 9 }, (_, i) => document.getElementById('audio' + (i + 1)));
         const playPauseButton = document.getElementById('playPauseButton');
         const fullscreenButton = document.getElementById('fullscreenButton');
         const playOverlay = document.getElementById('playOverlay');
-
         const videoContainer = document.getElementById('video-container');
         const controls = document.getElementById('controls');
         let timeout;
+        let volumeTimeout;
 
         // Muestra los controles cuando el cursor entra en el área del video
         videoContainer.addEventListener('mousemove', showControls);
+        videoContainer.addEventListener('touchstart', showControls);
 
         // Reproduce los audios cuando el video empieza a reproducirse
         video.addEventListener('play', playAllAudios);
@@ -314,6 +311,16 @@
         function hideControls() {
             controls.classList.remove('visible');
             controls.classList.add('hidden');
+        }
+
+        function handleVolumeChange(id, value) {
+            clearTimeout(volumeTimeout);
+            const audio = document.getElementById('audio' + id);
+            audio.volume = value;
+            showControls(); // Mantener controles visibles mientras se ajusta el volumen
+            volumeTimeout = setTimeout(() => {
+                hideControls(); // Ocultar controles si no hay cambio en el volumen durante 2 segundos
+            }, VOLUME_HIDE_DELAY);
         }
 
         function playAllAudios() {
@@ -430,14 +437,6 @@
 
         function stopPropagation(event) {
             event.stopPropagation();
-        }
-
-        function showSlider(slider) {
-            slider.classList.remove('hidden');
-        }
-
-        function hideSlider(slider) {
-            slider.classList.add('hidden');
         }
 
         // Inicia la funcionalidad de ocultar controles
