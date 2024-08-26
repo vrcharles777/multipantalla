@@ -300,6 +300,7 @@
         const endOverlay = document.getElementById('endOverlay');
         const videoContainer = document.getElementById('video-container');
         const controls = document.getElementById('controls');
+        const exitFullscreenButton = document.getElementById('exitFullscreen');
         let timeout;
         let volumeTimeout;
 
@@ -541,31 +542,27 @@
         // Ajusta la cuadrícula de controles al cargar la página
         adjustControlsGrid();
 
-
-        const exitFullscreenButton = document.getElementById('exitFullscreen');
-
         // Manejador de clics para salir de pantalla completa
         exitFullscreenButton.addEventListener('click', function () {
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        } else if (document.mozCancelFullScreen) { // Firefox
-            document.mozCancelFullScreen();
-        } else if (document.webkitExitFullscreen) { // Chrome, Safari y Opera
-            document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) { // IE/Edge
-            document.msExitFullscreen();
-        }
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.mozCancelFullScreen) { // Firefox
+                document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) { // Chrome, Safari y Opera
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) { // IE/Edge
+                document.msExitFullscreen();
+            }
         });
 
         // Mostrar el ícono de salida en pantalla completa
-        videoContainer.addEventListener('fullscreenchange', function () {
+        document.addEventListener('fullscreenchange', function () {
             if (document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
                 exitFullscreenButton.classList.add('visible');
             } else {
                 exitFullscreenButton.classList.remove('visible');
             }
-});
-
+        });
     </script>
 </body>
 </html>
