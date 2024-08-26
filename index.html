@@ -154,6 +154,31 @@
                 width: 60%; /* Ajuste del tamaño del control deslizante para pantalla completa */
             }
         }
+
+        .exit-fullscreen {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 20; /* Asegúrate de que el ícono esté encima del video */
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .exit-fullscreen.visible {
+            opacity: 1;
+        }
+
     </style>
 </head>
 <body>
@@ -244,6 +269,10 @@
                     <button onclick="toggleSolo(9); stopPropagation(event);" id="soloBtn9">Solo</button>
                 </div>
             </div>
+        </div>
+        <!-- Ícono para salir de pantalla completa -->
+        <div id="exitFullscreen" class="exit-fullscreen">
+            &#10005; <!-- Este es el carácter de la "X" para cerrar -->
         </div>
     </div>
 
@@ -511,6 +540,32 @@
         startSyncCheck();
         // Ajusta la cuadrícula de controles al cargar la página
         adjustControlsGrid();
+
+
+        const exitFullscreenButton = document.getElementById('exitFullscreen');
+
+        // Manejador de clics para salir de pantalla completa
+        exitFullscreenButton.addEventListener('click', function () {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.mozCancelFullScreen) { // Firefox
+            document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) { // Chrome, Safari y Opera
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { // IE/Edge
+            document.msExitFullscreen();
+        }
+        });
+
+        // Mostrar el ícono de salida en pantalla completa
+        videoContainer.addEventListener('fullscreenchange', function () {
+            if (document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
+                exitFullscreenButton.classList.add('visible');
+            } else {
+                exitFullscreenButton.classList.remove('visible');
+            }
+});
+
     </script>
 </body>
 </html>
