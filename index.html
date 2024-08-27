@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Reproductor</title>
@@ -19,7 +20,8 @@
             width: 100%;
             max-width: 640px;
             height: auto;
-            aspect-ratio: 16 / 9; /* Mantiene el aspecto del contenedor */
+            aspect-ratio: 16 / 9;
+            /* Mantiene el aspecto del contenedor */
         }
 
         video {
@@ -50,14 +52,15 @@
         }
 
         .control-group input[type="range"] {
-            width: 80%; /* Ajuste automático del tamaño del control deslizante */
+            width: 80%;
+            /* Ajuste automático del tamaño del control deslizante */
             margin: 5px;
         }
 
         .button-container {
             display: flex;
             gap: 60px;
-            margin-top: 20px; /* Aumenta la distancia entre el control deslizante y los botones */
+            margin-top: 20px;
         }
 
         .control-group button {
@@ -92,7 +95,8 @@
             transition: opacity 0.3s ease;
         }
 
-        .play-pause-button, .fullscreen-button {
+        .play-pause-button,
+        .fullscreen-button {
             margin-bottom: 20px;
             padding: 10px 20px;
             background-color: #007BFF;
@@ -150,10 +154,6 @@
                 max-width: 100%;
                 height: 100%;
             }
-
-            .button-container {
-                margin-top: 10px; /* Aumenta la distancia en pantalla completa */
-            }
         }
 
         .exit-fullscreen {
@@ -171,7 +171,8 @@
             align-items: center;
             border-radius: 50%;
             cursor: pointer;
-            z-index: 20; /* Asegúrate de que el ícono esté encima del video */
+            z-index: 20;
+            /* Asegúrate de que el ícono esté encima del video */
             opacity: 0;
             transition: opacity 0.3s ease;
         }
@@ -180,8 +181,15 @@
             opacity: 1;
         }
 
+        /* Clase adicional para aumentar la distancia en pantalla completa */
+        .fullscreen-control-group .button-container {
+            margin-top: 40px;
+            /* Incrementa la distancia cuando está en pantalla completa */
+            gap: 80px;
+        }
     </style>
 </head>
+
 <body>
     <!-- Contenedor de controles -->
     <div id="controls-container">
@@ -273,7 +281,8 @@
         </div>
         <!-- Ícono para salir de pantalla completa -->
         <div id="exitFullscreen" class="exit-fullscreen">
-            &#10005; <!-- Este es el carácter de la "X" para cerrar -->
+            &#10005;
+            <!-- Este es el carácter de la "X" para cerrar -->
         </div>
     </div>
 
@@ -294,7 +303,9 @@
         const VOLUME_HIDE_DELAY = 2000; // 2 segundos
 
         const video = document.getElementById('videoElement');
-        const audios = Array.from({ length: 9 }, (_, i) => document.getElementById('audio' + (i + 1)));
+        const audios = Array.from({
+            length: 9
+        }, (_, i) => document.getElementById('audio' + (i + 1)));
         const playPauseButton = document.getElementById('playPauseButton');
         const fullscreenButton = document.getElementById('fullscreenButton');
         const playOverlay = document.getElementById('playOverlay');
@@ -316,7 +327,7 @@
         video.addEventListener('pause', pauseAllAudios);
 
         // Manejador de clics en la capa de reproducción
-        playOverlay.addEventListener('click', function() {
+        playOverlay.addEventListener('click', function () {
             video.play();
             playAllAudios();
             playOverlay.style.display = 'none'; // Oculta la capa cuando se reproduce el video
@@ -325,7 +336,7 @@
         });
 
         // Manejador de clics en el contenedor del video para controlar la reproducción
-        videoContainer.addEventListener('click', function() {
+        videoContainer.addEventListener('click', function () {
             if (video.paused) {
                 video.play();
                 playAllAudios();
@@ -369,12 +380,12 @@
         window.addEventListener('resize', adjustControlsGrid);
 
         // Manejador de clics en la capa de finalización
-        endOverlay.addEventListener('click', function() {
+        endOverlay.addEventListener('click', function () {
             window.location.href = 'banda.html'; // Redirige a la página de la banda
         });
 
         // Manejador de clics fuera del video para ocultar la capa de finalización
-        document.addEventListener('click', function(event) {
+        document.addEventListener('click', function (event) {
             if (!videoContainer.contains(event.target)) {
                 endOverlay.style.display = 'none'; // Oculta la capa si se hace clic fuera del video
             }
@@ -523,6 +534,7 @@
             const width = window.innerWidth;
             const height = window.innerHeight;
             if (document.fullscreenElement) {
+                controls.classList.add('fullscreen-control-group');
                 if (width > height) {
                     // Modo horizontal: reducir un poco el tamaño de los controles
                     controls.style.gridTemplateColumns = "repeat(3, 1fr)";
@@ -540,6 +552,7 @@
                 }
             } else {
                 // No está en pantalla completa, restablecer el estilo original
+                controls.classList.remove('fullscreen-control-group');
                 controls.style.gridTemplateColumns = "repeat(3, 1fr)";
                 controls.style.gridTemplateRows = "repeat(3, 1fr)";
                 controls.style.gap = "10px"; // Espacio original entre controles
@@ -548,7 +561,7 @@
         }
 
         // Muestra la capa de finalización cuando el video termina
-        video.addEventListener('ended', function() {
+        video.addEventListener('ended', function () {
             endOverlay.style.display = 'flex';
         });
 
@@ -583,4 +596,5 @@
         });
     </script>
 </body>
+
 </html>
