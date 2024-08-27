@@ -49,6 +49,7 @@
             flex-direction: column;
             opacity: 1;
             pointer-events: all;
+            transition: transform 0.3s ease;
         }
 
         .control-group input[type="range"] {
@@ -181,19 +182,11 @@
             opacity: 1;
         }
 
-        /* Desplazamiento de los tres primeros grupos en pantalla completa modo horizontal */
-        .horizontal-fullscreen .control-group:nth-child(-n+3) {
-            position: relative;
-            top: -5px; /* Desplaza hacia arriba */
-        }
-
-        .horizontal-fullscreen .control-group:nth-child(-n+3) input[type="range"] {
-            position: relative;
-            z-index: 10;
-        }
-
-        .horizontal-fullscreen .exit-fullscreen {
-            z-index: 20; /* Asegura que el icono esté sobre los controles */
+        /* Clase adicional para aumentar la distancia en pantalla completa */
+        .fullscreen-control-group .button-container {
+            margin-top: 40px;
+            /* Incrementa la distancia cuando está en pantalla completa */
+            gap: 80px;
         }
     </style>
 </head>
@@ -222,22 +215,21 @@
         <!-- Controles superpuestos -->
         <div class="controls" id="controls">
             <!-- 9 zonas con controles deslizantes -->
-            <div class="control-group">
+            <div class="control-group" id="control-group-1">
                 <input type="range" min="0" max="1" step="0.1" value="1" oninput="handleVolumeChange(1, this.value)" onclick="stopPropagation(event)">
                 <div class="button-container">
                     <button onclick="toggleMute(1); stopPropagation(event);" id="muteBtn1">Mute</button>
                     <button onclick="toggleSolo(1); stopPropagation(event);" id="soloBtn1">Solo</button>
                 </div>
             </div>
-            <!-- Repetir para los demás controles -->
-            <div class="control-group">
+            <div class="control-group" id="control-group-2">
                 <input type="range" min="0" max="1" step="0.1" value="1" oninput="handleVolumeChange(2, this.value)" onclick="stopPropagation(event)">
                 <div class="button-container">
                     <button onclick="toggleMute(2); stopPropagation(event);" id="muteBtn2">Mute</button>
                     <button onclick="toggleSolo(2); stopPropagation(event);" id="soloBtn2">Solo</button>
                 </div>
             </div>
-            <div class="control-group">
+            <div class="control-group" id="control-group-3">
                 <input type="range" min="0" max="1" step="0.1" value="1" oninput="handleVolumeChange(3, this.value)" onclick="stopPropagation(event)">
                 <div class="button-container">
                     <button onclick="toggleMute(3); stopPropagation(event);" id="muteBtn3">Mute</button>
@@ -544,24 +536,41 @@
             if (document.fullscreenElement) {
                 controls.classList.add('fullscreen-control-group');
                 if (width > height) {
-                    // Modo horizontal: desplaza los tres primeros controles hacia arriba
-                    document.body.classList.add('horizontal-fullscreen');
+                    // Modo horizontal: ajustar los primeros 3 grupos de controles
+                    document.getElementById('control-group-1').style.transform = 'translateY(-30px)';
+                    document.getElementById('control-group-2').style.transform = 'translateY(-30px)';
+                    document.getElementById('control-group-3').style.transform = 'translateY(-30px)';
+                    controls.style.gridTemplateColumns = "repeat(3, 1fr)";
+                    controls.style.gridTemplateRows = "repeat(3, 1fr)";
+                    controls.style.gap = "5px";
+                    controls.style.transform = "scale(0.8)";
+                    controls.style.justifyContent = "center";
+                    // Hacer que el ícono de salir se superponga a los controles
+                    exitFullscreenButton.style.zIndex = 25;
                 } else {
                     // Modo vertical: reducir más el tamaño de los controles
                     controls.style.gridTemplateColumns = "repeat(3, 1fr)";
                     controls.style.gridTemplateRows = "repeat(3, 1fr)";
-                    controls.style.gap = "25px"; // Espacio reducido entre controles
-                    controls.style.transform = "scale(0.6)"; // Reducir más el tamaño de los controles
+                    controls.style.gap = "25px";
+                    controls.style.transform = "scale(0.6)";
                     controls.style.justifyContent = "center";
+                    // Restablecer los controles desplazados
+                    document.getElementById('control-group-1').style.transform = 'translateY(0)';
+                    document.getElementById('control-group-2').style.transform = 'translateY(0)';
+                    document.getElementById('control-group-3').style.transform = 'translateY(0)';
                 }
             } else {
                 // No está en pantalla completa, restablecer el estilo original
                 controls.classList.remove('fullscreen-control-group');
-                document.body.classList.remove('horizontal-fullscreen');
                 controls.style.gridTemplateColumns = "repeat(3, 1fr)";
                 controls.style.gridTemplateRows = "repeat(3, 1fr)";
                 controls.style.gap = "10px"; // Espacio original entre controles
                 controls.style.transform = "scale(1)"; // Tamaño original de los controles
+                // Restablecer los controles desplazados
+                document.getElementById('control-group-1').style.transform = 'translateY(0)';
+                document.getElementById('control-group-2').style.transform = 'translateY(0)';
+                document.getElementById('control-group-3').style.transform = 'translateY(0)';
+                exitFullscreenButton.style.zIndex = 20;
             }
         }
 
