@@ -187,6 +187,11 @@
             /* Incrementa la distancia cuando está en pantalla completa */
             gap: 80px;
         }
+
+        /* Clase para mover los controles hacia arriba en pantalla completa horizontal */
+        .fullscreen-horizontal .control-group:nth-child(-n + 3) {
+            transform: translateY(-100px);
+        }
     </style>
 </head>
 
@@ -534,16 +539,17 @@
             const width = window.innerWidth;
             const height = window.innerHeight;
             if (document.fullscreenElement) {
-                controls.classList.add('fullscreen-control-group');
                 if (width > height) {
-                    // Modo horizontal: reducir un poco el tamaño de los controles
+                    // Modo horizontal: mover los 3 primeros controles hacia arriba
+                    controls.classList.add('fullscreen-horizontal');
                     controls.style.gridTemplateColumns = "repeat(3, 1fr)";
                     controls.style.gridTemplateRows = "repeat(3, 1fr)";
                     controls.style.gap = "5px"; // Espacio reducido entre controles
                     controls.style.transform = "scale(0.8)"; // Reducir un poco el tamaño de los controles
                     controls.style.justifyContent = "center"; // Mantener controles centrados horizontalmente
                 } else {
-                    // Modo vertical: reducir más el tamaño de los controles
+                    // Modo vertical: restablecer la posición
+                    controls.classList.remove('fullscreen-horizontal');
                     controls.style.gridTemplateColumns = "repeat(3, 1fr)";
                     controls.style.gridTemplateRows = "repeat(3, 1fr)";
                     controls.style.gap = "25px"; // Espacio reducido entre controles
@@ -552,7 +558,7 @@
                 }
             } else {
                 // No está en pantalla completa, restablecer el estilo original
-                controls.classList.remove('fullscreen-control-group');
+                controls.classList.remove('fullscreen-horizontal');
                 controls.style.gridTemplateColumns = "repeat(3, 1fr)";
                 controls.style.gridTemplateRows = "repeat(3, 1fr)";
                 controls.style.gap = "10px"; // Espacio original entre controles
