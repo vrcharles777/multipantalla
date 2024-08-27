@@ -181,11 +181,17 @@
             opacity: 1;
         }
 
-        /* Clase adicional para aumentar la distancia en pantalla completa */
-        .fullscreen-control-group .button-container {
-            margin-top: 40px;
-            /* Incrementa la distancia cuando está en pantalla completa */
-            gap: 80px;
+        /* Clase para reposicionar los primeros 3 grupos en pantalla completa horizontal */
+        @media (fullscreen) and (orientation: landscape) {
+            .controls {
+                grid-template-rows: 1fr 1fr 1fr;
+            }
+
+            .controls .control-group:nth-child(1),
+            .controls .control-group:nth-child(2),
+            .controls .control-group:nth-child(3) {
+                transform: translateY(-40%);
+            }
         }
     </style>
 </head>
@@ -536,18 +542,18 @@
             if (document.fullscreenElement) {
                 controls.classList.add('fullscreen-control-group');
                 if (width > height) {
-                    // Modo horizontal: reducir un poco el tamaño de los controles
+                    // Modo horizontal: reposicionar los 3 primeros controles
                     controls.style.gridTemplateColumns = "repeat(3, 1fr)";
                     controls.style.gridTemplateRows = "repeat(3, 1fr)";
-                    controls.style.gap = "5px"; // Espacio reducido entre controles
-                    controls.style.transform = "scale(0.8)"; // Reducir un poco el tamaño de los controles
-                    controls.style.justifyContent = "center"; // Mantener controles centrados horizontalmente
+                    controls.style.gap = "5px";
+                    controls.style.transform = "scale(0.8)";
+                    controls.style.justifyContent = "center";
                 } else {
-                    // Modo vertical: reducir más el tamaño de los controles
+                    // Modo vertical: sin cambios adicionales
                     controls.style.gridTemplateColumns = "repeat(3, 1fr)";
                     controls.style.gridTemplateRows = "repeat(3, 1fr)";
-                    controls.style.gap = "25px"; // Espacio reducido entre controles
-                    controls.style.transform = "scale(0.6)"; // Reducir más el tamaño de los controles
+                    controls.style.gap = "25px";
+                    controls.style.transform = "scale(0.6)";
                     controls.style.justifyContent = "center";
                 }
             } else {
@@ -555,8 +561,8 @@
                 controls.classList.remove('fullscreen-control-group');
                 controls.style.gridTemplateColumns = "repeat(3, 1fr)";
                 controls.style.gridTemplateRows = "repeat(3, 1fr)";
-                controls.style.gap = "10px"; // Espacio original entre controles
-                controls.style.transform = "scale(1)"; // Tamaño original de los controles
+                controls.style.gap = "10px";
+                controls.style.transform = "scale(1)";
             }
         }
 
