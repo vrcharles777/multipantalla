@@ -181,17 +181,19 @@
             opacity: 1;
         }
 
-        /* Clase para reposicionar los primeros 3 grupos en pantalla completa horizontal */
-        @media (fullscreen) and (orientation: landscape) {
-            .controls {
-                grid-template-rows: 1fr 1fr 1fr;
-            }
+        /* Desplazamiento de los tres primeros grupos en pantalla completa modo horizontal */
+        .horizontal-fullscreen .control-group:nth-child(-n+3) {
+            position: relative;
+            top: -50px; /* Desplaza hacia arriba */
+        }
 
-            .controls .control-group:nth-child(1),
-            .controls .control-group:nth-child(2),
-            .controls .control-group:nth-child(3) {
-                transform: translateY(-40%);
-            }
+        .horizontal-fullscreen .control-group:nth-child(-n+3) input[type="range"] {
+            position: relative;
+            z-index: 10;
+        }
+
+        .horizontal-fullscreen .exit-fullscreen {
+            z-index: 20; /* Asegura que el icono esté sobre los controles */
         }
     </style>
 </head>
@@ -542,27 +544,20 @@
             if (document.fullscreenElement) {
                 controls.classList.add('fullscreen-control-group');
                 if (width > height) {
-                    // Modo horizontal: reposicionar los 3 primeros controles
-                    controls.style.gridTemplateColumns = "repeat(3, 1fr)";
-                    controls.style.gridTemplateRows = "repeat(3, 1fr)";
-                    controls.style.gap = "5px";
-                    controls.style.transform = "scale(0.8)";
-                    controls.style.justifyContent = "center";
+                    // Modo horizontal: desplaza los tres primeros controles hacia arriba
+                    document.body.classList.add('horizontal-fullscreen');
                 } else {
-                    // Modo vertical: sin cambios adicionales
-                    controls.style.gridTemplateColumns = "repeat(3, 1fr)";
-                    controls.style.gridTemplateRows = "repeat(3, 1fr)";
-                    controls.style.gap = "25px";
-                    controls.style.transform = "scale(0.6)";
-                    controls.style.justifyContent = "center";
+                    // Modo vertical: restablecer la clase si está en modo vertical
+                    document.body.classList.remove('horizontal-fullscreen');
                 }
             } else {
                 // No está en pantalla completa, restablecer el estilo original
                 controls.classList.remove('fullscreen-control-group');
+                document.body.classList.remove('horizontal-fullscreen');
                 controls.style.gridTemplateColumns = "repeat(3, 1fr)";
                 controls.style.gridTemplateRows = "repeat(3, 1fr)";
-                controls.style.gap = "10px";
-                controls.style.transform = "scale(1)";
+                controls.style.gap = "10px"; // Espacio original entre controles
+                controls.style.transform = "scale(1)"; // Tamaño original de los controles
             }
         }
 
