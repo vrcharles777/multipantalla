@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reproductor</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            position: relative;
+            width: 640px;
+            height: 360px;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+        }
+
+        .controls {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .control-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin: 0 10px;
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .control-group input[type="range"] {
+            width: 160px; /* Hacer el control deslizante más largo */
+            margin: 5px;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 60px;
+            margin-top: 20px;
+        }
+
+        .control-group button {
+            width: 40px;
+            height: 40px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: center;
+            line-height: 40px;
+            padding: 0;
+        }
+
+        .control-group button.muted {
+            background-color: blue;
+        }
+
+        .control-group button.solo {
+            background-color: green;
+        }
+
+        .hidden {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .visible {
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .play-pause-button, .fullscreen-button, .choose-musicians-button {
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .play-pause-button.paused {
+            background-color: #28a745;
+        }
+
+        .fullscreen-button {
+            background-color: #28a745;
+            margin-right: 10px;
+        }
+
+        .choose-musicians-button {
+            background-color: #007BFF;
+            margin-left: 10px;
+        }
+
+        .play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .end-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 15;
+        }
+    </style>
+</head>
+<body>
+    <!-- Contenedor de controles -->
+    <div id="controls-container">
+        <!-- Botón de pantalla completa -->
+        <button class="fullscreen-button" id="fullscreenButton">Fullscreen</button>
+        <!-- Botón de control de reproducción -->
+        <button class="play-pause-button" id="playPauseButton">Play</button>
+        <!-- Botón "Escoger Músicos" -->
+        <button class="choose-musicians-button" id="chooseMusiciansButton">Escoger Músicos</button>
+    </div>
+
+    <div class="container" id="video-container">
+        <video id="videoElement" controls>
+            <source src="movie.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+
+        <!-- Capa de reproducción -->
+        <div id="playOverlay" class="play-overlay">Click to Play</div>
+
+        <!-- Capa de finalización -->
+        <div id="endOverlay" class="end-overlay">Escoge a tu músico favorito</div>
+
+        <!-- Controles superpuestos -->
+        <div class="controls" id="controls">
+            <!-- 9 zonas con controles deslizantes -->
+            <div class="control-group">
+                <input type="range" min="0" max="1" step="0.1" value="1" oninput="handleVolumeChange(1, this.value)" onclick="stopPropagation(event)">
+                <div class="button-container">
+                    <button onclick="toggleMute(1); stopPropagation(event);" id="muteBtn1">Mute</button>
+                    <button onclick="toggleSolo(1); stopPropagation(event);" id="soloBtn1">Solo</button>
+                </div>
+            </div>
+            <!-- Repetir para los demás controles -->
+            <div class="control-group">
+                <input type="range" min="0" max="1" step="0.1" value="1" oninput="handleVolumeChange(2, this.value)" onclick="stopPropagation(event)">
+                <div class="button-container">
+                    <button onclick="toggleMute(2); stopPropagation(event);" id="muteBtn2">Mute</button>
+                    <button onclick="toggleSolo(2); stopPropagation(event);" id="soloBtn2">Solo</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <input type="range" min="0" max="1" step="0.1" value="1" oninput="handleVolumeChange(3, this.value)" onclick="stopPropagation(event)">
+                <div class="button-container">
+                    <button onclick="toggleMute(3); stopPropagation(event);" id="muteBtn3">Mute</button>
+                    <button onclick="toggleSolo(3); stopPropagation(event);" id="soloBtn3">Solo</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <input type="range" min="0" max="1" step="0.1" value="1" oninput="handleVolumeChange(4, this.value)" onclick="stopPropagation(event)">
+                <div class="button-container">
+                    <button onclick="toggleMute(4); stopPropagation(event);" id="muteBtn4">Mute</button>
+                    <button onclick="toggleSolo(4); stopPropagation(event);" id="soloBtn4">Solo</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <input type="range" min="0" max="1" step="0.1" value="1" oninput="handleVolumeChange(5, this.value)" onclick="stopPropagation(event)">
+                <div class="button-container">
+                    <button onclick="toggleMute(5); stopPropagation(event);" id="muteBtn5">Mute</button>
+                    <button onclick="toggleSolo(5); stopPropagation(event);" id="soloBtn5">Solo</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <input type="range" min="0" max="1" step="0.1" value="1" oninput="handleVolumeChange(6, this.value)" onclick="stopPropagation(event)">
+                <div class="button-container">
+                    <button onclick="toggleMute(6); stopPropagation(event);" id="muteBtn6">Mute</button>
+                    <button onclick="toggleSolo(6); stopPropagation(event);" id="soloBtn6">Solo</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <input type="range" min="0" max="1" step="0.1" value="1" oninput="handleVolumeChange(7, this.value)" onclick="stopPropagation(event)">
+                <div class="button-container">
+                    <button onclick="toggleMute(7); stopPropagation(event);" id="muteBtn7">Mute</button>
+                    <button onclick="toggleSolo(7); stopPropagation(event);" id="soloBtn7">Solo</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <input type="range" min="0" max="1" step="0.1" value="1" oninput="handleVolumeChange(8, this.value)" onclick="stopPropagation(event)">
+                <div class="button-container">
+                    <button onclick="toggleMute(8); stopPropagation(event);" id="muteBtn8">Mute</button>
+                    <button onclick="toggleSolo(8); stopPropagation(event);" id="soloBtn8">Solo</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <input type="range" min="0" max="1" step="0.1" value="1" oninput="handleVolumeChange(9, this.value)" onclick="stopPropagation(event)">
+                <div class="button-container">
+                    <button onclick="toggleMute(9); stopPropagation(event);" id="muteBtn9">Mute</button>
+                    <button onclick="toggleSolo(9); stopPropagation(event);" id="soloBtn9">Solo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audios (9 ejemplos) -->
+    <audio id="audio1" preload="auto" src="audio1.mp3"></audio>
+    <audio id="audio2" preload="auto" src="audio2.mp3"></audio>
+    <audio id="audio3" preload="auto" src="audio3.mp3"></audio>
+    <audio id="audio4" preload="auto" src="audio4.mp3"></audio>
+    <audio id="audio5" preload="auto" src="audio5.mp3"></audio>
+    <audio id="audio6" preload="auto" src="audio6.mp3"></audio>
+    <audio id="audio7" preload="auto" src="audio7.mp3"></audio>
+    <audio id="audio8" preload="auto" src="audio8.mp3"></audio>
+    <audio id="audio9" preload="auto" src="audio9.mp3"></audio>
+
+    <script>
+        const SYNC_CHECK_INTERVAL = 500; // 500 ms
+        const SYNC_TOLERANCE = 0.25; // 0.25 segundos
+        const VOLUME_HIDE_DELAY = 2000; // 2 segundos
+
+        const video = document.getElementById('videoElement');
+        const audios = Array.from({ length: 9 }, (_, i) => document.getElementById('audio' + (i + 1)));
+        const playPauseButton = document.getElementById('playPauseButton');
+        const fullscreenButton = document.getElementById('fullscreenButton');
+        const chooseMusiciansButton = document.getElementById('chooseMusiciansButton');
+        const playOverlay = document.getElementById('playOverlay');
+        const endOverlay = document.getElementById('endOverlay');
+        const videoContainer = document.getElementById('video-container');
+        const controls = document.getElementById('controls');
+        let timeout;
+        let volumeTimeout;
+
+        // Muestra los controles cuando el cursor entra en el área del video
+        videoContainer.addEventListener('mousemove', showControls);
+        videoContainer.addEventListener('touchstart', showControls);
+
+        // Reproduce los audios cuando el video empieza a reproducirse
+        video.addEventListener('play', playAllAudios);
+
+        // Pausa los audios cuando el video se pausa
+        video.addEventListener('pause', pauseAllAudios);
+
+        // Manejador de clics en la capa de reproducción
+        playOverlay.addEventListener('click', function() {
+            video.play();
+            playAllAudios();
+            playOverlay.style.display = 'none'; // Oculta la capa cuando se reproduce el video
+            playPauseButton.textContent = 'Pause';
+            playPauseButton.classList.remove('paused');
+        });
+
+        // Manejador de clics en el contenedor del video para controlar la reproducción
+        videoContainer.addEventListener('click', function() {
+            if (video.paused) {
+                video.play();
+                playAllAudios();
+                playOverlay.style.display = 'none'; // Oculta la capa cuando se reproduce el video
+                playPauseButton.textContent = 'Pause';
+                playPauseButton.classList.remove('paused');
+            }
+        });
+
+        // Manejador de clics en el botón de Play/Pause
+        playPauseButton.addEventListener('click', function () {
+            if (video.paused) {
+                video.play();
+                playAllAudios();
+                playOverlay.style.display = 'none'; // Oculta la capa cuando se reproduce el video
+                playPauseButton.textContent = 'Pause';
+                playPauseButton.classList.remove('paused');
+            } else {
+                video.pause();
+                pauseAllAudios();
+                playPauseButton.textContent = 'Play';
+                playPauseButton.classList.add('paused');
+                playOverlay.style.display = 'flex'; // Muestra la capa cuando se pausa el video
+            }
+        });
+
+        // Manejador de clics en el botón de Pantalla Completa
+        fullscreenButton.addEventListener('click', function () {
+            if (video.requestFullscreen) {
+                video.requestFullscreen();
+            } else if (video.mozRequestFullScreen) { // Firefox
+                video.mozRequestFullScreen();
+            } else if (video.webkitRequestFullscreen) { // Chrome, Safari y Opera
+                video.webkitRequestFullscreen();
+            } else if (video.msRequestFullscreen) { // IE/Edge
+                video.msRequestFullscreen();
+            }
+        });
+
+        // Manejador de clics en el botón "Escoger Músicos"
+        chooseMusiciansButton.addEventListener('click', function () {
+            window.location.href = '../banda.html'; // Redirige a la carpeta anterior
+        });
+
+        // Manejador de clics en la capa de finalización
+        endOverlay.addEventListener('click', function() {
+            window.location.href = 'banda.html'; // Redirige a la página de la banda
+        });
+
+        // Manejador de clics fuera del video para ocultar la capa de finalización
+        document.addEventListener('click', function(event) {
+            if (!videoContainer.contains(event.target)) {
+                endOverlay.style.display = 'none'; // Oculta la capa si se hace clic fuera del video
+            }
+        });
+
+        // Muestra los controles cuando el cursor entra en el área del video
+        function showControls() {
+            controls.classList.remove('hidden');
+            controls.classList.add('visible');
+            clearTimeout(timeout);
+            timeout = setTimeout(hideControls, 2000);
+        }
+
+        function hideControls() {
+            controls.classList.remove('visible');
+            controls.classList.add('hidden');
+        }
+
+        function handleVolumeChange(id, value) {
+            clearTimeout(volumeTimeout);
+            const audio = document.getElementById('audio' + id);
+            audio.volume = value;
+            showControls(); // Mantener controles visibles mientras se ajusta el volumen
+            volumeTimeout = setTimeout(() => {
+                hideControls(); // Ocultar controles si no hay cambio en el volumen durante 2 segundos
+            }, VOLUME_HIDE_DELAY);
+        }
+
+        function playAllAudios() {
+            audios.forEach(audio => {
+                audio.currentTime = video.currentTime;
+                audio.play().catch(error => {
+                    console.error(`Error al reproducir el audio:`, error);
+                });
+            });
+        }
+
+        function pauseAllAudios() {
+            audios.forEach(audio => audio.pause());
+        }
+
+        function setVolume(id, value) {
+            const audio = document.getElementById('audio' + id);
+            audio.volume = value;
+        }
+
+        function toggleMute(id) {
+            const audio = document.getElementById('audio' + id);
+            const muteButton = document.getElementById('muteBtn' + id);
+            const soloButton = document.getElementById('soloBtn' + id);
+
+            if (!soloButton.classList.contains('solo')) {
+                audio.muted = !audio.muted;
+                muteButton.classList.toggle('muted', audio.muted);
+            }
+        }
+
+        function toggleSolo(id) {
+            const soloButton = document.getElementById('soloBtn' + id);
+            const muteButton = document.getElementById('muteBtn' + id);
+            const audio = document.getElementById('audio' + id);
+            const isSoloActive = soloButton.classList.contains('solo');
+            const allSoloButtons = document.querySelectorAll('.solo');
+
+            if (isSoloActive) {
+                if (allSoloButtons.length === 1) {
+                    restoreAllAudios();
+                }
+                soloButton.classList.remove('solo');
+                audio.muted = false;
+            } else {
+                soloButton.classList.add('solo');
+                audio.muted = false;
+                muteButton.classList.remove('muted');
+                muteOtherAudios(id);
+            }
+        }
+
+        function muteOtherAudios(activeId) {
+            audios.forEach((audio, index) => {
+                const i = index + 1;
+                if (i !== activeId) {
+                    const soloButton = document.getElementById('soloBtn' + i);
+                    const muteButton = document.getElementById('muteBtn' + i);
+                    if (!soloButton.classList.contains('solo')) {
+                        audio.muted = true;
+                        muteButton.classList.add('muted');
+                    }
+                }
+            });
+        }
+
+        function restoreAllAudios() {
+            audios.forEach((audio, index) => {
+                const i = index + 1;
+                const muteButton = document.getElementById('muteBtn' + i);
+                audio.muted = false;
+                muteButton.classList.remove('muted');
+            });
+        }
+
+        function updateMuteButtons() {
+            audios.forEach((audio, index) => {
+                const i = index + 1;
+                const muteButton = document.getElementById('muteBtn' + i);
+                muteButton.classList.toggle('muted', audio.muted);
+            });
+        }
+
+        function checkSync() {
+            const videoTime = video.currentTime;
+            const isDesynchronized = audios.some(audio => Math.abs(audio.currentTime - videoTime) > SYNC_TOLERANCE);
+
+            if (isDesynchronized) {
+                resyncMedia();
+            }
+        }
+
+        function startSyncCheck() {
+            setInterval(checkSync, SYNC_CHECK_INTERVAL);
+        }
+
+        function syncMedia() {
+            const videoTime = video.currentTime;
+            audios.forEach(audio => {
+                audio.currentTime = videoTime;
+                audio.play().catch(error => {
+                    console.error(`Error al reproducir el audio:`, error);
+                });
+            });
+        }
+
+        function resyncMedia() {
+            video.pause();
+            syncMedia();
+            video.play().catch(error => {
+                console.error('Error al reproducir el video:', error);
+            });
+        }
+
+        function stopPropagation(event) {
+            event.stopPropagation();
+        }
+
+        // Muestra la capa de finalización cuando el video termina
+        video.addEventListener('ended', function() {
+            endOverlay.style.display = 'flex';
+        });
+
+        // Inicia la funcionalidad de ocultar controles
+        showControls();
+        // Inicia el chequeo de sincronización
+        startSyncCheck();
+    </script>
+</body>
+</html>
