@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reproductor</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            position: relative;
+            width: 640px;
+            height: 360px;
+        }
+
+        .controls {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .control-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin: 0 10px;
+            opacity: 1;
+            pointer-events: all;
+            position: relative;
+        }
+
+        .toggle-switch {
+            width: 60px;
+            height: 34px;
+            position: relative;
+            display: inline-block;
+            background-color: #28a745; /* Coincide con el color del botón "Formar Banda" */
+            border-radius: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #fff;
+            border-radius: 34px;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            border-radius: 50%;
+            left: 4px;
+            bottom: 4px;
+            background-color: #28a745; /* Coincide con el color del botón "Formar Banda" */
+            transition: .4s;
+        }
+
+        input:checked + .slider {
+            background-color: #28a745; /* Coincide con el color del botón "Formar Banda" */
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .button-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .button-container button {
+            width: 150px;
+            height: 40px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .button-container button:nth-child(1) {
+            background-color: #007BFF;
+        }
+
+        .button-container button:nth-child(2) {
+            background-color: #28a745;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.5s ease;
+        }
+
+        .hidden {
+            opacity: 0;
+        }
+
+        .visible {
+            opacity: 1;
+        }
+
+        /* Ajuste para mover los toggle switches más hacia abajo */
+        .toggle-switch-container {
+            position: relative;
+            top: 40px; /* Ajusta este valor para mover los toggle switches más abajo */
+        }
+    </style>
+</head>
+<body>
+    <!-- Contenedor de controles -->
+    <div class="button-container">
+        <!-- Botón "Banda ICZBCN Original" -->
+        <button onclick="window.location.href='index.html'">Banda ICZBCN Original</button>
+        <!-- Botón "Formar Banda" -->
+        <button id="formarBandaButton">Formar Banda</button>
+    </div>
+
+    <div class="container" id="image-container">
+        <!-- Imagen -->
+        <div class="image-container">
+            <img id="dynamicImage" src="imagen1.png" alt="Imagen">
+        </div>
+
+        <!-- Controles superpuestos -->
+        <div class="controls" id="controls">
+            <!-- Toggle Switch 5 en el centro -->
+            <div class="control-group" style="grid-column: 2 / 3; grid-row: 2 / 3;">
+                <div class="toggle-switch-container">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggle5">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            <!-- Toggle Switch 6 a la derecha de 5 -->
+            <div class="control-group" style="grid-column: 3 / 4; grid-row: 2 / 3;">
+                <div class="toggle-switch-container">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggle6">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            <!-- Toggle Switch 7 en la parte inferior izquierda -->
+            <div class="control-group" style="grid-column: 1 / 2; grid-row: 3 / 4;">
+                <div class="toggle-switch-container">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggle7">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Selecciona los toggle switches y la imagen
+        const toggle5 = document.getElementById('toggle5');
+        const toggle6 = document.getElementById('toggle6');
+        const toggle7 = document.getElementById('toggle7');
+        const dynamicImage = document.getElementById('dynamicImage');
+        const formarBandaButton = document.getElementById('formarBandaButton');
+
+        // Función para cambiar la imagen según el estado de los toggle switches
+        function updateImage() {
+            if (toggle5.checked && toggle6.checked && toggle7.checked) {
+                dynamicImage.src = 'imagen567.png';
+            } else if (toggle5.checked && toggle6.checked) {
+                dynamicImage.src = 'imagen56.png';
+            } else if (toggle5.checked && toggle7.checked) {
+                dynamicImage.src = 'imagen57.png';
+            } else if (toggle6.checked && toggle7.checked) {
+                dynamicImage.src = 'imagen67.png';
+            } else if (toggle5.checked) {
+                dynamicImage.src = 'imagen5.png';
+            } else if (toggle6.checked) {
+                dynamicImage.src = 'imagen6.png';
+            } else if (toggle7.checked) {
+                dynamicImage.src = 'imagen7.png';
+            } else {
+                dynamicImage.src = 'imagen1.png';
+            }
+        }
+
+        // Añade eventos para cambiar la imagen al seleccionar los toggle switches
+        toggle5.addEventListener('change', updateImage);
+        toggle6.addEventListener('change', updateImage);
+        toggle7.addEventListener('change', updateImage);
+
+        // Función para redirigir según la imagen mostrada
+        function redirectToPage() {
+            const imageSrc = dynamicImage.src.split('/').pop(); // Obtiene el nombre del archivo de imagen
+
+            // Redirige a la URL correspondiente
+            if (imageSrc === 'imagen5.png') {
+                window.location.href = 'imagen5/index.html';
+            } else if (imageSrc === 'imagen6.png') {
+                window.location.href = 'imagen6/index.html';
+            } else if (imageSrc === 'imagen7.png') {
+                window.location.href = 'imagen7/index.html';
+            } else if (imageSrc === 'imagen56.png') {
+                window.location.href = 'imagen56/index.html';
+            } else if (imageSrc === 'imagen57.png') {
+                window.location.href = 'imagen57/index.html';
+            } else if (imageSrc === 'imagen67.png') {
+                window.location.href = 'imagen67/index.html';
+            } else if (imageSrc === 'imagen567.png') {
+                window.location.href = 'imagen567/index.html';
+            } else {
+                // Opcional: redirige a una URL predeterminada si no coincide con ninguna imagen
+                window.location.href = 'default/index.html';
+            }
+        }
+
+        // Añade evento al botón "Formar Banda"
+        formarBandaButton.addEventListener('click', redirectToPage);
+    </script>
+</body>
+</html>
