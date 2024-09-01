@@ -13,6 +13,7 @@
             margin: 0;
             background: #000;
             color: #fff;
+            position: relative;
         }
         #video {
             max-width: 100%;
@@ -23,11 +24,12 @@
             position: absolute;
             top: 20px;
             left: 20px;
+            z-index: 10; /* Asegúrate de que el botón esté por encima del video */
         }
     </style>
 </head>
 <body>
-    <button id="play">Play 9 Audios1</button>
+    <button id="play">Play 9 Audios</button>
     <video id="video" src="./movie.mp4" controls></video>
 
     <script>
@@ -80,8 +82,9 @@
             // Reproducir el video
             video.currentTime = 0; // Reiniciar el video
             video.play();
-            // Video start time is controlled by the audio start time
-            setTimeout(() => video.currentTime = 0, 100);
+
+            // Sincronizar video con audio
+            video.currentTime = audioContext.currentTime - startTime + 0.1; // Ajustar el tiempo del video
         };
 
         document.getElementById('play').addEventListener('click', async () => {
