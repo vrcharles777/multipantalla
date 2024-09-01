@@ -3,10 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reproduce 9 Audios Sincronizados</title>
+    <title>Reproduce 9 Audios y Video Sincronizados</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #000;
+            color: #fff;
+            text-align: center;
+        }
+
+        #video {
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        #play {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <button id="play">Play 9 Audios</button>
+    <video id="video" controls>
+        <source src="./movie.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <button id="play">Play 9 Audios and Video</button>
 
     <script>
         let audioContext;
@@ -53,9 +81,19 @@
             });
         };
 
+        // Función para reproducir el video y los audios de manera sincronizada
+        const playMedia = () => {
+            const video = document.getElementById('video');
+            video.currentTime = 0;  // Asegúrate de que el video comience desde el principio
+            video.play();
+
+            const startTime = audioContext.currentTime + 0.1; // pequeño retraso para sincronización
+            playAudios();
+        };
+
         document.getElementById('play').addEventListener('click', async () => {
             await initAudio();
-            playAudios();
+            playMedia();
         });
     </script>
 </body>
