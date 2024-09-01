@@ -13,7 +13,6 @@
             margin: 0;
             background: #000;
             color: #fff;
-            position: relative;
         }
         #video {
             max-width: 100%;
@@ -24,12 +23,11 @@
             position: absolute;
             top: 20px;
             left: 20px;
-            z-index: 10; /* Asegúrate de que el botón esté por encima del video */
         }
     </style>
 </head>
 <body>
-    <button id="play">Play 9 Audios</button>
+    <button id="play">Play 9 Audios4</button>
     <video id="video" src="./movie.mp4" controls></video>
 
     <script>
@@ -69,7 +67,8 @@
 
         // Función para reproducir los audios y el video de manera sincronizada
         const playMedia = () => {
-            const startTime = audioContext.currentTime + 0.1; // pequeño retraso para sincronización
+            const startTime = audioContext.currentTime + 1.0; // más tiempo para preparar
+            const videoStartTime = audioContext.currentTime - startTime + 1.0; // ajustar video
 
             // Reproducir los audios
             audioBuffers.forEach(buffer => {
@@ -82,9 +81,8 @@
             // Reproducir el video
             video.currentTime = 0; // Reiniciar el video
             video.play();
-
-            // Sincronizar video con audio
-            video.currentTime = audioContext.currentTime - startTime + 0.1; // Ajustar el tiempo del video
+            // Ajustar el tiempo del video con el nuevo startTime
+            setTimeout(() => video.currentTime = videoStartTime, 100); // Asegúrate de que el video tenga tiempo para iniciar
         };
 
         document.getElementById('play').addEventListener('click', async () => {
