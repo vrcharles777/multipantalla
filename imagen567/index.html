@@ -11,14 +11,15 @@
 
     <script>
         document.getElementById('playButton').addEventListener('click', async function() {
-            // Verifica si el navegador soporta AudioContext
-            if (!window.AudioContext && !window.webkitAudioContext) {
+            // Verificar si el navegador soporta AudioContext
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContext) {
                 alert('Tu navegador no soporta la Web Audio API.');
                 return;
             }
 
             // Crear un contexto de audio
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const audioContext = new AudioContext();
 
             // Definir las URLs de los audios (asegúrate de que las URLs sean accesibles y válidas)
             const audioUrls = [
@@ -33,21 +34,20 @@
                 'audio9.mp3'
             ];
 
-            // Cargar y decodificar todos los audios
-            try {
-                const loadAudioPromises = audioUrls.map(url => {
-                    return fetch(url)
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error(`Error en la solicitud: ${response.statusText}`);
-                            }
-                            return response.arrayBuffer();
-                        })
-                        .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer));
-                });
+            // Función para cargar y decodificar un audio
+            async function loadAudio(url) {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`Error en la solicitud: ${response.statusText}`);
+                }
+                const arrayBuffer = await response.arrayBuffer();
+                return await audioContext.decodeAudioData(arrayBuffer);
+            }
 
-                const audioBuffers = await Promise.all(loadAudioPromises);
-                
+            // Cargar todos los audios
+            try {
+                const audioBuffers = await Promise.all(audioUrls.map(url => loadAudio(url)));
+
                 // Obtener el tiempo actual en el contexto de audio
                 const startTime = audioContext.currentTime;
 
@@ -60,7 +60,6 @@
                 });
 
                 console.log('Todos los audios están siendo reproducidos simultáneamente.');
-
             } catch (error) {
                 console.error('Error al cargar o reproducir los audios:', error);
                 alert('Hubo un error al cargar o reproducir los audios. Mira la consola para más detalles.');
