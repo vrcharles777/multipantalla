@@ -10,7 +10,13 @@
     <button id="playButton">Reproducir Audios</button>
 
     <script>
-        document.getElementById('playButton').addEventListener('click', function() {
+        document.getElementById('playButton').addEventListener('click', async function() {
+            // Verifica si el navegador soporta AudioContext
+            if (!window.AudioContext && !window.webkitAudioContext) {
+                alert('Tu navegador no soporta la Web Audio API.');
+                return;
+            }
+
             // Crear un contexto de audio
             const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -27,28 +33,38 @@
                 'audio9.mp3'
             ];
 
-            // Crear un array de promesas para cargar los audios
-            const loadAudioPromises = audioUrls.map(url => {
-                return fetch(url)
-                    .then(response => response.arrayBuffer())
-                    .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer));
-            });
+            // Cargar y decodificar todos los audios
+            try {
+                const loadAudioPromises = audioUrls.map(url => {
+                    return fetch(url)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`Error en la solicitud: ${response.statusText}`);
+                            }
+                            return response.arrayBuffer();
+                        })
+                        .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer));
+                });
 
-            // Reproducir todos los audios simultáneamente una vez que estén cargados
-            Promise.all(loadAudioPromises)
-                .then(audioBuffers => {
-                    // Obtener el tiempo actual en el contexto de audio
-                    const startTime = audioContext.currentTime;
+                const audioBuffers = await Promise.all(loadAudioPromises);
+                
+                // Obtener el tiempo actual en el contexto de audio
+                const startTime = audioContext.currentTime;
 
-                    // Reproducir cada buffer de audio al mismo tiempo
-                    audioBuffers.forEach(audioBuffer => {
-                        const source = audioContext.createBufferSource();
-                        source.buffer = audioBuffer;
-                        source.connect(audioContext.destination);
-                        source.start(startTime);
-                    });
-                })
-                .catch(error => console.error('Error al cargar o reproducir los audios:', error));
+                // Reproducir todos los audios simultáneamente
+                audioBuffers.forEach(audioBuffer => {
+                    const source = audioContext.createBufferSource();
+                    source.buffer = audioBuffer;
+                    source.connect(audioContext.destination);
+                    source.start(startTime);
+                });
+
+                console.log('Todos los audios están siendo reproducidos simultáneamente.');
+
+            } catch (error) {
+                console.error('Error al cargar o reproducir los audios:', error);
+                alert('Hubo un error al cargar o reproducir los audios. Mira la consola para más detalles.');
+            }
         });
     </script>
 </body>
