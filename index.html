@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirección según sistema operativo</title>
+    <script>
+        // Función para detectar el sistema operativo
+        function redirigirPorSistemaOperativo() {
+            var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+            // Detecta Android
+            if (/android/i.test(userAgent)) {
+                window.location.href = "android.html";
+            }
+            // Detecta iOS
+            else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                window.location.href = "ios.html";
+            }
+            // Detecta Windows
+            else if (/windows/i.test(userAgent)) {
+                window.location.href = "android.html"; // También redirige a android.html para Windows
+            }
+            // Si no se detecta ninguno de los anteriores, puedes manejarlo aquí
+            else {
+                alert("Sistema operativo no soportado.");
+            }
+        }
+
+        // Ejecutar la función al cargar la página
+        window.onload = redirigirPorSistemaOperativo;
+    </script>
+</head>
+<body>
+    <h1>Redirección según sistema operativo</h1>
+    <p>Si ves este mensaje, significa que el script no ha redirigido correctamente.</p>
+</body>
+</html>
